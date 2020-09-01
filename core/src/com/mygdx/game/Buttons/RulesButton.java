@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.Screens.HomeScreen;
+import com.mygdx.game.Screens.NewsScreen;
 import com.mygdx.game.math.Rect;
 
 
@@ -47,6 +47,6 @@ public class RulesButton extends ScaledButton {
 
         Gdx.input.getTextInput(textListener, "Your login: ", "placeholder", ""); */
 
-        game.setScreen(new HomeScreen(game));
+        game.setScreen(new NewsScreen(game));
     }
 }

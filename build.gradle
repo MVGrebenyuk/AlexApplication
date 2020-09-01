@@ -8,9 +8,13 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
         google()
+
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        //noinspection GradleDependency
+         "io.netty:netty-all:4.1.50.Final"
+        classpath "io.netty:netty-all:4.1.50.Final"
+        classpath 'com.android.tools.build:gradle:4.0.1'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
         
 
@@ -38,6 +42,7 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
+
 }
 
 project(":desktop") {
@@ -46,6 +51,8 @@ project(":desktop") {
 
     dependencies {
         implementation project(":core")
+        implementation "io.netty:netty-all:4.1.51.Final"
+        api "io.netty:netty-all:4.1.51.Final"
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"

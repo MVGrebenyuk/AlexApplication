@@ -1,20 +1,17 @@
 package com.mygdx.game.Base;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.mygdx.game.Base.BaseScreen;
-import com.mygdx.game.Buttons.ExitButton;
+import com.mygdx.game.Buttons.AdsButton;
 import com.mygdx.game.Buttons.MessageButton;
 import com.mygdx.game.Buttons.RulesButton;
 import com.mygdx.game.Sprite.Background;
-import com.mygdx.game.Sprite.Bubbles;
+import com.mygdx.game.Sprite.Bottom_background;
+import com.mygdx.game.Sprite.Top_background;
 import com.mygdx.game.math.Rect;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
@@ -23,16 +20,20 @@ public class StartScreen extends BaseScreen {
 
     private Game game;
     private Background background;
+    private Top_background topBack;
+    private Bottom_background bottomBack;
     private Font text;
 
 // текстуры
     private Texture bg;
-    private Texture exitText;
     private Texture lsText;
     private Texture rulesText;
-    private TextureRegion regionExit;
+    private Texture rupor_button;
+    private Texture topbg;
+    private Texture botbg;
     private TextureRegion regionRules;
     private TextureRegion lsRegion;
+    private TextureRegion adsRegion;
     private Socket socket;
     private String pageName = "HomePage";
 
@@ -43,8 +44,8 @@ public class StartScreen extends BaseScreen {
 //кнопки
 
     private RulesButton rules;
-    private ExitButton exit;
     private MessageButton ls;
+    private AdsButton ads;
 
     public StartScreen(Game game) {
         this.game = game;
@@ -63,16 +64,20 @@ public class StartScreen extends BaseScreen {
         } */
         text = new Font("text.fnt", "text.png");
         bg = new Texture("textures/SI_Background.png");
-        exitText = new Texture("textures/exitButton.png");
+        topbg = new Texture("textures/top_background.png");
+        botbg = new Texture("textures/bottom_background.png");
         rulesText = new Texture("textures/homeButton.png");
         lsText = new Texture("textures/lsImage.png");
+        rupor_button = new Texture("textures/rupor_button.png");
         background = new Background(bg);
+        topBack = new Top_background(topbg);
+        bottomBack = new Bottom_background(botbg);
         lsRegion = new TextureRegion(lsText);
+        adsRegion = new TextureRegion(rupor_button);
         regionRules = new TextureRegion(rulesText);
-        regionExit = new TextureRegion(exitText);
-        exit = new ExitButton(regionExit);
         rules = new RulesButton(regionRules, game);
         ls = new MessageButton(lsRegion, game);
+        ads = new AdsButton(adsRegion, game);
 
 
     }
@@ -80,9 +85,12 @@ public class StartScreen extends BaseScreen {
     @Override
     public void resize(Rect worldBounds) {
         background.resize(worldBounds);
-        exit.resize(worldBounds);
+        topBack.resize(worldBounds);
+        bottomBack.resize(worldBounds);
+        background.resize(worldBounds);
         rules.resize(worldBounds);
         ls.resize(worldBounds);
+        ads.resize(worldBounds);
         text.setSize(0.02f);
     }
 
@@ -101,17 +109,17 @@ public class StartScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        exit.touchDown(touch, pointer, button);
         rules.touchDown(touch, pointer, button);
         ls.touchDown(touch, pointer, button);
+        ads.touchDown(touch, pointer, button);
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException {
-        exit.touchUp(touch, pointer, button);
         rules.touchUp(touch, pointer, button);
         ls.touchUp(touch, pointer, button);
+        ads.touchUp(touch, pointer, button);
         return false;
     }
 
@@ -123,9 +131,11 @@ public class StartScreen extends BaseScreen {
     public void draw() {
         batch.begin();
         background.draw(batch);
-        exit.draw(batch);
+        topBack.draw(batch);
+        bottomBack.draw(batch);
         rules.draw(batch);
         ls.draw(batch);
+        ads.draw(batch);
         text.draw(batch, pageName, 0 - ((pageName.length()*0.015f)/2), worldBounds.getTop() - 0.01f);
         batch.end();
     }

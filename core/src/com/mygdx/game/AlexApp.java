@@ -1,15 +1,14 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
-import com.mygdx.game.Base.StartScreen;
-import com.mygdx.game.Screens.HomeScreen;
+import com.mygdx.game.Screens.NewsScreen;
 
 public class AlexApp extends Game {
 
 	@Override
 	public void create() {
 
-		setScreen(new HomeScreen(this)
+		setScreen(new NewsScreen(this)
 
 		);
 	}

@@ -5,14 +5,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon= "@drawable/alexapp"
         android:isGame="true"
         android:appCategory="game"
-        android:label="@string/app_name"
+        android:label="Моя Алексеевка"
         android:theme="@style/GdxTheme" >
         <activity
             android:name="com.mygdx.game.AndroidLauncher"
-            android:label="@string/app_name" 
+            android:label="Моя Алексеевка"
             android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout">
             <intent-filter>
