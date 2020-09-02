@@ -1,6 +1,8 @@
 package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +17,7 @@ import com.mygdx.game.math.Rect;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
@@ -22,13 +25,10 @@ import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 public class NewsScreen extends StartScreen {
 
     private Font[] newsFont;
-    private static String[] str;
-    private static String[] spl;
     private News[] news;
     private News fNews = null;
     private FullNews fullNews;
     private CloseNewsButton cnb;
-    private static String loadNews;
     private static int quantity;
     private static boolean showFullNewsFlag = false;
     private Texture newsTexture;
@@ -41,7 +41,9 @@ public class NewsScreen extends StartScreen {
     private static ObjectDecoderInputStream is;
     private static ObjectEncoderOutputStream os;
     private static  boolean reload = false;
+    private static FileHandle handle = Gdx.files.local("/news.txt");;
 
+    private ArrayList<ServerNews> list = new ArrayList<>();
 
     @Override
     public void setPageName(String pageName) {
@@ -62,7 +64,12 @@ public class NewsScreen extends StartScreen {
                 is = new ObjectDecoderInputStream(socket.getInputStream());
                 String getNews = "/getNews";
                 os.writeObject(getNews);
-                loadNews = (String) is.readObject();
+                byte[] bytes = new byte[is.available()];
+                bytes = (byte[]) is.readObject();
+                System.out.println("Файл прочитан, размер: "+ bytes.length);
+                String local = Gdx.files.getLocalStoragePath();
+                System.out.println("Local path: " + local);
+                handle.writeBytes(bytes, false);
                 System.out.println("\n\n_______Новости загружены_____\n\n");
                 reload = false;
             } catch (IOException | ClassNotFoundException e) {
@@ -77,10 +84,20 @@ public class NewsScreen extends StartScreen {
         closeNewsButtonRegion = new TextureRegion(closeNewsButtontexture);
         fullNews = new FullNews(fullNewsScreenRegion, fNews);
         cnb = new CloseNewsButton(closeNewsButtonRegion, fullNews, this);
-        spl = loadNews.split("<>");
-        quantity = Integer.parseInt(spl[0]);
+        createServerNews();
         showNews();
         setPageName("Новости");
+    }
+
+    private void createServerNews() {
+        String loadShortcut = handle.readString();
+        String[] loadShort = loadShortcut.split("<>");
+        quantity = loadShort.length;
+        System.out.println("ДЛИНА ЛОАДШОРТКА: " + loadShortcut.length());
+        for(String i: loadShort) {
+            list.add(new ServerNews("Title", StrBuilder.createShortDescr(i), StrBuilder.createDescr(i)));
+        }
+
     }
 
     @Override
@@ -145,17 +162,12 @@ public class NewsScreen extends StartScreen {
     }
 
      public void showNews(){
-         str = new String[quantity];
          news = new News[quantity];
          newsFont = new Font[quantity];
-         String[] dscrptn = new String[quantity];
          for(int i = 1; i<=quantity; i++) {
-             str[i-1] = StrBuilder.createShortDescr(spl[i]);
-             dscrptn[i-1] = StrBuilder.createDescr(spl[i]);
-             System.out.println(str[i-1]);
              news[i-1] = new News(newsRegion, i, this);
-             news[i-1].setShortcut(str[i-1]);
-             news[i-1].setDescription(dscrptn[i-1]);
+             news[i-1].setShortcut(list.get(i-1).getShortDescription());
+             news[i-1].setDescription(list.get(i-1).getFullDescription());
              newsFont[i-1] = new Font("textNews.fnt", "textNews.png");
              news[i-1].setNewsFont(newsFont[i-1]);
 

@@ -7,7 +7,7 @@ public abstract class StrBuilder {
         int countString = 0;
         char[] chars = str.toCharArray();
         char[] arrChar = new char[35];
-        String[] charArray = new String[10];
+        String[] charArray = new String[100];
         for (char cha : chars) {
             if (cnt < 35) {
                 arrChar[cnt] = cha;
