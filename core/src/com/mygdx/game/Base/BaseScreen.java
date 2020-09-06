@@ -141,19 +141,18 @@ public class BaseScreen implements Screen, InputProcessor {
         return false;
     }
 
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
     public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException {
         System.out.println("touchUp touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
-        touchDragged(touch, pointer);
-        return false;
-    }
 
-    public boolean touchDragged(Vector2 touch, int pointer) {
+    public boolean touchDragged(Vector2 touch, int pointer, int button) {
         System.out.println("touchDragged touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }

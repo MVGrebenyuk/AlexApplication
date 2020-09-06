@@ -66,6 +66,10 @@ public class Sprite extends Rect {
         return false;
     }
 
+    public boolean touchDragged(Vector2 touch, int pointer, int button){
+        return false;
+    }
+
     public float getAngle() {
         return angle;
     }

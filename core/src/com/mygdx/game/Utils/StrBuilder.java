@@ -13,8 +13,10 @@ public abstract class StrBuilder {
                 arrChar[cnt] = cha;
                 cnt++;
             } else {
-                charArray[countString] = new String(arrChar).concat("\n");
-                countString++;
+                if(countString < 4) {
+                    charArray[countString] = new String(arrChar).concat("\n");
+                    countString++;
+                }
                 cnt = 0;
                 for(int y = 0; y<arrChar.length-1; y++){
                     arrChar[y] = ' ';
@@ -28,7 +30,11 @@ public abstract class StrBuilder {
         for(int z = 0; z<cnt; z++){
             dopChar[z] = arrChar[z];
         }
-        charArray[countString] = new String(dopChar);
+        if(countString >= 4) {
+            charArray[countString] = new String("..."); //был аргументом dopChar
+        } else {
+            charArray[countString] = new String(dopChar);
+        }
 
         str  = " ";
         for (String strr : charArray) {

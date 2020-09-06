@@ -11,6 +11,7 @@ import com.mygdx.game.Base.StartScreen;
 import com.mygdx.game.Common.CloseNewsButton;
 import com.mygdx.game.Common.FullNews;
 import com.mygdx.game.Common.News;
+import com.mygdx.game.Common.NewsBorder;
 import com.mygdx.game.Utils.StrBuilder;
 import com.mygdx.game.math.Rect;
 
@@ -28,13 +29,16 @@ public class NewsScreen extends StartScreen {
     private News[] news;
     private News fNews = null;
     private FullNews fullNews;
-    private CloseNewsButton cnb;
+    private CloseNewsButton closeNewsButton;
+    private NewsBorder[] newsBorder;
+    private Texture newsBorderTexture;
     private static int quantity;
     private static boolean showFullNewsFlag = false;
-    private Texture newsTexture;
+    private Texture[] newsTexture;
     private Texture fullNewsScreenTexture;
     private Texture closeNewsButtontexture;
-    private TextureRegion newsRegion;
+    private TextureRegion newsBorderTextureRegion;
+    private TextureRegion[] newsRegion;
     private TextureRegion fullNewsScreenRegion;
     private TextureRegion closeNewsButtonRegion;
     private static Socket socket;
@@ -57,11 +61,13 @@ public class NewsScreen extends StartScreen {
     @Override
     public void show() {
         super.show();
+
         if(socket == null || reload == true) {
             try {
                 socket = new Socket("192.168.0.101", 8189);
                 os = new ObjectEncoderOutputStream(socket.getOutputStream());
                 is = new ObjectDecoderInputStream(socket.getInputStream());
+               // String getNewsIcons = "/getNewsIcons";
                 String getNews = "/getNews";
                 os.writeObject(getNews);
                 byte[] bytes = new byte[is.available()];
@@ -76,14 +82,14 @@ public class NewsScreen extends StartScreen {
                 e.printStackTrace();
             }
         }
-        newsTexture = new Texture("textures/news.png");
+        newsBorderTexture = new Texture("textures/newsBorder.png");
         fullNewsScreenTexture = new Texture("textures/fullnews.png");
         closeNewsButtontexture = new Texture("textures/closebutton.png");
-        newsRegion = new TextureRegion(newsTexture);
+        newsBorderTextureRegion = new TextureRegion(newsBorderTexture);
         fullNewsScreenRegion = new TextureRegion(fullNewsScreenTexture);
         closeNewsButtonRegion = new TextureRegion(closeNewsButtontexture);
         fullNews = new FullNews(fullNewsScreenRegion, fNews);
-        cnb = new CloseNewsButton(closeNewsButtonRegion, fullNews, this);
+        closeNewsButton = new CloseNewsButton(closeNewsButtonRegion, fullNews, this);
         createServerNews();
         showNews();
         setPageName("Новости");
@@ -104,8 +110,9 @@ public class NewsScreen extends StartScreen {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         fullNews.resize(worldBounds);
-        cnb.resize(worldBounds);
+        closeNewsButton.resize(worldBounds);
         for(int i = 0; i<=quantity-1; i++) {
+            newsBorder[i].resize(worldBounds);
             news[i].resize(worldBounds);
             newsFont[i].setSize(0.014f);
         }
@@ -115,6 +122,9 @@ public class NewsScreen extends StartScreen {
     public void render(float delta) {
         super.render(delta);
         drawl();
+        for(NewsBorder i : newsBorder){
+            i.update(delta);
+        }
     }
 
 
@@ -123,13 +133,26 @@ public class NewsScreen extends StartScreen {
         super.dispose();
     }
 
+
+
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         for(News i: news){
             i.touchDown(touch, pointer, button);
         }
-        cnb.touchDown(touch, pointer, button);
+        for(NewsBorder i : newsBorder){
+            i.touchDragged(touch, pointer, button);
+        }
+        closeNewsButton.touchDown(touch, pointer, button);
         return super.touchDown(touch, pointer, button);
+    }
+
+    @Override
+    public boolean touchDragged(Vector2 touch, int pointer, int button) {
+        for(NewsBorder i : newsBorder){
+            i.touchDragged(touch, pointer, button);
+        }
+        return super.touchDragged(touch, pointer, button);
     }
 
     @Override
@@ -137,7 +160,7 @@ public class NewsScreen extends StartScreen {
         for(News i: news){
             i.touchUp(touch, pointer, button);
         }
-        cnb.touchUp(touch, pointer, button);
+        closeNewsButton.touchUp(touch, pointer, button);
         return super.touchUp(touch, pointer, button);
     }
 
@@ -146,14 +169,17 @@ public class NewsScreen extends StartScreen {
         createNews();
         if(showFullNewsFlag == true) {
             fullNews.draw(batch);
-            cnb.draw(batch);
-            fullNews.getNews().getNewsFont().draw(batch, fullNews.getNews().getDescription(), fullNews.getLeft() + 0.01f, fullNews.getTop() - 0.3f);
+            closeNewsButton.draw(batch);
+            fullNews.getNews().getNewsFont().draw(batch, fullNews.getNews().getDescription(), fullNews.getLeft() + 0.04f, fullNews.getTop() - 0.3f);
         }
         batch.end();
     }
 
     public void createNews() {
         int count = 0;
+        for(NewsBorder i: newsBorder){
+            i.draw(batch);
+        }
         for (News i : news) {
             i.draw(batch);
             newsFont[count].draw(batch, i.getShortcut(), i.getRight() + 0.01f, i.getTop());
@@ -162,10 +188,16 @@ public class NewsScreen extends StartScreen {
     }
 
      public void showNews(){
+         newsTexture = new Texture[quantity];
+         newsRegion = new TextureRegion[quantity];
          news = new News[quantity];
          newsFont = new Font[quantity];
+         newsBorder = new NewsBorder[quantity];
          for(int i = 1; i<=quantity; i++) {
-             news[i-1] = new News(newsRegion, i, this);
+             newsTexture[i-1] = new Texture("data/news" + i + ".jpg");
+             newsRegion[i-1] = new TextureRegion(newsTexture[i-1]);
+             newsBorder[i-1] = new NewsBorder(newsBorderTextureRegion, i);
+             news[i-1] = new News(newsRegion[i-1], this, newsBorder[i-1]);
              news[i-1].setShortcut(list.get(i-1).getShortDescription());
              news[i-1].setDescription(list.get(i-1).getFullDescription());
              newsFont[i-1] = new Font("textNews.fnt", "textNews.png");

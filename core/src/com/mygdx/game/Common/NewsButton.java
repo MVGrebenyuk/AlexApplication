@@ -1,15 +1,19 @@
-package com.mygdx.game.Buttons;
+package com.mygdx.game.Common;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.Screens.AdsScreen;
+import com.mygdx.game.Screens.NewsScreen;
 import com.mygdx.game.math.Rect;
 
-public class AdsButton extends ScaledButton {
+
+public class NewsButton extends ScaledButton {
+
     private Game game;
 
-    public AdsButton(TextureRegion region, Game game) {
+    public NewsButton(TextureRegion region, Game game) {
         super(region);
         this.game = game;
 
@@ -18,12 +22,16 @@ public class AdsButton extends ScaledButton {
     @Override
     public void resize(Rect worldBounds) {
         setHeightProportion(0.07f);
-        setRight(worldBounds.getLeft() + 0.20f);
         setBottom(worldBounds.getBottom() + 0.01f);
     }
 
     @Override
+    public void update(float delta) {
+        super.update(delta);
+    }
+
+    @Override
     public void action() {
-        game.setScreen(new AdsScreen(game));
+        game.setScreen(new NewsScreen(game));
     }
 }

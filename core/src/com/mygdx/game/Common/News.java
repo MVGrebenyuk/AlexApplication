@@ -20,6 +20,8 @@ public class News extends ScaledButton {
     public String shortcut;
     public String description;
     public String title;
+    public String newsImage;
+    public NewsBorder newsBorder;
 
     public NewsScreen screen;
     public Font newsFont;
@@ -32,10 +34,10 @@ public class News extends ScaledButton {
         this.newsFont = newsFont;
     }
 
-    public News(TextureRegion region, int count, NewsScreen screen) {
+    public News(TextureRegion region, NewsScreen screen, NewsBorder border) {
         super(region);
-        this.count = count;
         this.screen = screen;
+        this.newsBorder = border;
         shortcut = " ";
         description = " ";
         title = " ";
@@ -44,18 +46,19 @@ public class News extends ScaledButton {
 
     @Override
     public void resize(Rect worldBounds) {
-        if(count == 1) {
+
             setHeightProportion(0.1f);
-            setLeft(worldBounds.getLeft() + 0.01f);
-            setTop(worldBounds.getTop() - 0.07f);
-        } else if(count > 1){
-            setHeightProportion(0.1f);
-            setLeft(worldBounds.getLeft() + 0.01f);
-            setTop(worldBounds.getTop() - (0.07f + step * (count - 1)));
-        } else {
-            setHeightProportion(0.1f);
-            setTop(worldBounds.getTop());
-        }
+            setLeft(newsBorder.getLeft() + 0.01f);
+            setTop(newsBorder.getTop() - 0.03f);
+
+    }
+
+    public String getNewsImage() {
+        return newsImage;
+    }
+
+    public void setNewsImage(String newsImage) {
+        this.newsImage = newsImage;
     }
 
     public String getShortcut() {
