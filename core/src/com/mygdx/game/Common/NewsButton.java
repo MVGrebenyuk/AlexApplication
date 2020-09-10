@@ -3,6 +3,7 @@ package com.mygdx.game.Common;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.mygdx.game.Base.ScaledButton;
 import com.mygdx.game.Screens.NewsScreen;
@@ -34,4 +35,5 @@ public class NewsButton extends ScaledButton {
     public void action() {
         game.setScreen(new NewsScreen(game));
     }
+
 }

@@ -12,6 +12,7 @@ import com.mygdx.game.Sprite.Bottom_background;
 import com.mygdx.game.Sprite.Top_background;
 import com.mygdx.game.math.Rect;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
@@ -116,7 +117,7 @@ public class StartScreen extends BaseScreen {
     }
 
     @Override
-    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException {
+    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
         rules.touchUp(touch, pointer, button);
         ls.touchUp(touch, pointer, button);
         ads.touchUp(touch, pointer, button);

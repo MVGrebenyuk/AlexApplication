@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
@@ -15,6 +16,7 @@ import com.mygdx.game.Common.NewsBorder;
 import com.mygdx.game.Utils.StrBuilder;
 import com.mygdx.game.math.Rect;
 
+import java.beans.VetoableChangeListener;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -32,7 +34,7 @@ public class NewsScreen extends StartScreen {
     private CloseNewsButton closeNewsButton;
     private NewsBorder[] newsBorder;
     private Texture newsBorderTexture;
-    private static int quantity;
+    public static int quantity;
     private static boolean showFullNewsFlag = false;
     private Texture[] newsTexture;
     private Texture fullNewsScreenTexture;
@@ -41,11 +43,11 @@ public class NewsScreen extends StartScreen {
     private TextureRegion[] newsRegion;
     private TextureRegion fullNewsScreenRegion;
     private TextureRegion closeNewsButtonRegion;
-    private static Socket socket;
-    private static ObjectDecoderInputStream is;
-    private static ObjectEncoderOutputStream os;
+    public static Socket socket;
+    public static ObjectDecoderInputStream is;
+    public static ObjectEncoderOutputStream os;
     private static  boolean reload = false;
-    private static FileHandle handle = Gdx.files.local("/news.txt");;
+    private static FileHandle handle = Gdx.files.local("/news.txt");
 
     private ArrayList<ServerNews> list = new ArrayList<>();
 
@@ -125,6 +127,9 @@ public class NewsScreen extends StartScreen {
         for(NewsBorder i : newsBorder){
             i.update(delta);
         }
+        for(News i : news){
+            i.update(delta);
+        }
     }
 
 
@@ -140,28 +145,37 @@ public class NewsScreen extends StartScreen {
         for(News i: news){
             i.touchDown(touch, pointer, button);
         }
-        for(NewsBorder i : newsBorder){
-            i.touchDragged(touch, pointer, button);
-        }
         closeNewsButton.touchDown(touch, pointer, button);
         return super.touchDown(touch, pointer, button);
     }
 
+
     @Override
-    public boolean touchDragged(Vector2 touch, int pointer, int button) {
-        for(NewsBorder i : newsBorder){
-            i.touchDragged(touch, pointer, button);
-        }
-        return super.touchDragged(touch, pointer, button);
+    public boolean touchDragged(Vector2 touch, int pointer) {
+            for(NewsBorder i: newsBorder) {
+                if(i.isMe(touch)) {
+                    i.dragged(touch);
+                }
+            }
+            for(News i: news){
+                i.posBorder();
+            }
+        return super.touchDragged(touch, pointer);
     }
 
     @Override
-    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException {
+    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
         for(News i: news){
             i.touchUp(touch, pointer, button);
         }
         closeNewsButton.touchUp(touch, pointer, button);
+        System.out.println("TOUCH UP");
         return super.touchUp(touch, pointer, button);
+    }
+
+    @Override
+    public void draw() {
+        super.draw();
     }
 
     public void drawl() {
@@ -196,14 +210,27 @@ public class NewsScreen extends StartScreen {
          for(int i = 1; i<=quantity; i++) {
              newsTexture[i-1] = new Texture("data/news" + i + ".jpg");
              newsRegion[i-1] = new TextureRegion(newsTexture[i-1]);
-             newsBorder[i-1] = new NewsBorder(newsBorderTextureRegion, i);
+             newsBorder[i-1] = new NewsBorder(newsBorderTextureRegion, i, newsBorder[checkNull(i-2)]); //ВОТ ХУЙ ЗНАЕТ ЧТО ТУТ СДЕЛАТЬ
              news[i-1] = new News(newsRegion[i-1], this, newsBorder[i-1]);
              news[i-1].setShortcut(list.get(i-1).getShortDescription());
              news[i-1].setDescription(list.get(i-1).getFullDescription());
              newsFont[i-1] = new Font("textNews.fnt", "textNews.png");
              news[i-1].setNewsFont(newsFont[i-1]);
-
          }
+         for(int i = 1; i<=quantity; i++){
+             newsBorder[i-1].setNextBorder(newsBorder[checkNull(i)]);
+         }
+     }
+
+     public int checkNull(int i){
+        int x = i;
+        if(i <= 0){
+            x = 0;
+        }
+        if(i >= quantity){
+            x = quantity-1;
+         }
+        return x;
      }
 
      public void showFullNews(News news){
@@ -214,4 +241,5 @@ public class NewsScreen extends StartScreen {
     public void closeFullNews() {
         showFullNewsFlag = false;
     }
+
 }

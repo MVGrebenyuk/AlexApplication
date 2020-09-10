@@ -6,6 +6,8 @@ import com.mygdx.game.Base.ScaledButton;
 import com.mygdx.game.Screens.AdsScreen;
 import com.mygdx.game.math.Rect;
 
+import java.io.IOException;
+
 public class AdsButton extends ScaledButton {
     private Game game;
 
@@ -23,7 +25,7 @@ public class AdsButton extends ScaledButton {
     }
 
     @Override
-    public void action() {
+    public void action() throws IOException {
         game.setScreen(new AdsScreen(game));
     }
 }

@@ -23,6 +23,7 @@ public class News extends ScaledButton {
     public String newsImage;
     public NewsBorder newsBorder;
 
+
     public NewsScreen screen;
     public Font newsFont;
 
@@ -43,14 +44,21 @@ public class News extends ScaledButton {
         title = " ";
     }
 
+    @Override
+    public boolean touchDragged(Vector2 touch, int pointer) {
+        return super.touchDragged(touch, pointer);
+    }
+
+    public boolean posBorder(){
+        pos.y = newsBorder.pos.y;
+        return false;
+    }
 
     @Override
     public void resize(Rect worldBounds) {
-
             setHeightProportion(0.1f);
             setLeft(newsBorder.getLeft() + 0.01f);
             setTop(newsBorder.getTop() - 0.03f);
-
     }
 
     public String getNewsImage() {

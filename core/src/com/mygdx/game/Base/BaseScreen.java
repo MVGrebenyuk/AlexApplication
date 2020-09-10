@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +15,7 @@ import com.mygdx.game.Sprite.Bubbles;
 import com.mygdx.game.math.MatrixUtils;
 import com.mygdx.game.math.Rect;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class BaseScreen implements Screen, InputProcessor {
@@ -28,6 +30,7 @@ public class BaseScreen implements Screen, InputProcessor {
     private Matrix3 screenToWorld;
 
     private Vector2 touch;
+    private Vector2 touchDraggedFind;
     private Texture bubbl;
     private TextureRegion regbubbl;
     private Bubbles[] bubbles;
@@ -42,6 +45,7 @@ public class BaseScreen implements Screen, InputProcessor {
         worldToGl = new Matrix4();
         screenToWorld = new Matrix3();
         touch = new Vector2();
+        touchDraggedFind = new Vector2();
         //bubbl = new Texture("textures/bubbles.png");
         //regbubbl = new TextureRegion(bubbl);
         //bubbles = new Bubbles[8];
@@ -66,10 +70,6 @@ public class BaseScreen implements Screen, InputProcessor {
         screenBounds.setSize(width, height);
         screenBounds.setLeft(0);
         screenBounds.setBottom(0);
-       // for (Bubbles bubbles1 : bubbles) {
-       //     bubbles1.resize(worldBounds);
-       // }
-
         float aspect = width / (float) height;
         worldBounds.setHeight(1f);
         worldBounds.setWidth(1f * aspect);
@@ -135,7 +135,7 @@ public class BaseScreen implements Screen, InputProcessor {
             touchUp(touch, pointer, button);
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
         return false;
@@ -143,16 +143,18 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        touch.set(screenX, screenBounds.getHeight() -  + screenY).mul(screenToWorld);
+        touchDragged(touch, pointer);
         return false;
     }
 
-    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException {
+    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
         System.out.println("touchUp touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }
 
 
-    public boolean touchDragged(Vector2 touch, int pointer, int button) {
+    public boolean touchDragged(Vector2 touch, int pointer) {
         System.out.println("touchDragged touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }
@@ -166,4 +168,5 @@ public class BaseScreen implements Screen, InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Utils.Regions;
 import com.mygdx.game.math.Rect;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Sprite extends Rect {
@@ -58,7 +59,7 @@ public class Sprite extends Rect {
         return false;
     }
 
-    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException {
+    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
         return false;
     }
 

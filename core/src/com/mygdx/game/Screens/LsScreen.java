@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.StartScreen;
 import com.mygdx.game.math.Rect;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class LsScreen extends StartScreen {
@@ -44,7 +45,7 @@ public class LsScreen extends StartScreen {
     }
 
     @Override
-    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException {
+    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
         return super.touchUp(touch, pointer, button);
     }
 }

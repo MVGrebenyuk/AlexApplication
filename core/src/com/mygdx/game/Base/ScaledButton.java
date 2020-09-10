@@ -1,11 +1,13 @@
 package com.mygdx.game.Base;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
-public abstract class ScaledButton extends Sprite {
+public abstract class ScaledButton extends Sprite{
 
     private static final float SCALE = 0.9f;
 
@@ -29,20 +31,15 @@ public abstract class ScaledButton extends Sprite {
         return false;
     }
 
-    @Override
-    public boolean touchDragged(Vector2 touch, int pointer, int button) {
-      /*  if (pressed || !isMe(touch)) {
-            return false;
+    public boolean touchDragged(Vector2 touch, int pointer) {
+        if(isMe(touch)){
+            this.pos.y = touch.y;
         }
-        this.pos.y = touch.y;*/
-    /*  if(this.touch.y != touch.y){
-          this.pos.y = touch.y;
-      } */
         return false;
     }
 
     @Override
-    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException {
+    public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
         if (this.pointer != pointer || !pressed) {
             return false;
         }
@@ -54,5 +51,6 @@ public abstract class ScaledButton extends Sprite {
         return false;
     }
 
-    public abstract void action() throws SQLException, ClassNotFoundException;
+    public abstract void action() throws SQLException, ClassNotFoundException, IOException;
+
 }
