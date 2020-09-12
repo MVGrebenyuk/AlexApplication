@@ -1,31 +1,34 @@
-package com.mygdx.game.Common;
+package com.mygdx.game.Vote;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.Screens.NewsScreen;
+import com.mygdx.game.News.NewsBorder;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class NewsBorder extends ScaledButton {
+public class Vote extends ScaledButton {
+
+    private Texture background;
 
     private int count;
     private float step = 0.16f;
-    private NewsBorder[] previousNext = new NewsBorder[2];
+    private com.mygdx.game.News.NewsBorder[] previousNext = new com.mygdx.game.News.NewsBorder[2];
 
-    public NewsBorder(TextureRegion region, int count, NewsBorder previous) {
+    public Vote(TextureRegion region, int count, com.mygdx.game.News.NewsBorder previous) {
         super(region);
         this.previousNext[0] = previous;
         this.count = count;
     }
 
-    public NewsBorder(TextureRegion region, int count){
+    public Vote(TextureRegion region, int count){
         super(region);
         this.count = count;
     }
+
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
@@ -42,7 +45,7 @@ public class NewsBorder extends ScaledButton {
         return super.touchUp(touch, pointer, button);
     }
 
-    public void dragSupport(NewsBorder i){
+    public void dragSupport(com.mygdx.game.News.NewsBorder i){
         if(!i.equals(this)){
             if (previousNext[0] != null) {
                 previousNext[0].pos.y = this.pos.y + 0.16f; //setTop(this.getTop() + 0.16f);
@@ -57,9 +60,9 @@ public class NewsBorder extends ScaledButton {
         if (previousNext[1] != null) {
             previousNext[1].pos.y = this.pos.y - 0.16f; //setTop(this.getTop() - 0.16f);
         }
-           if(isMe(touch)) {
-                this.pos.y = touch.y;
-           }
+        if(isMe(touch)) {
+            this.pos.y = touch.y;
+        }
         if (previousNext[0] != null) {
             previousNext[0].pos.y = this.pos.y + 0.16f; //setTop(this.getTop() + 0.16f);
         }
@@ -73,7 +76,7 @@ public class NewsBorder extends ScaledButton {
     @Override
     public void resize(Rect worldBounds) {
         if(count == 1) {
-            setHeightProportion(0.165f);
+            setHeightProportion(0.6f);
             setTop(worldBounds.getTop() - 0.07f);
             //this.pos.x = this.getLeft();
         } else if(count > 1){

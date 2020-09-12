@@ -4,9 +4,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.Buttons.AdsButton;
-import com.mygdx.game.Buttons.MessageButton;
-import com.mygdx.game.Common.NewsButton;
+import com.mygdx.game.Ads.AdsButton;
+import com.mygdx.game.Vote.VoteButton;
+import com.mygdx.game.News.NewsButton;
 import com.mygdx.game.Sprite.Background;
 import com.mygdx.game.Sprite.Bottom_background;
 import com.mygdx.game.Sprite.Top_background;
@@ -45,7 +45,7 @@ public class StartScreen extends BaseScreen {
 //кнопки
 
     private NewsButton rules;
-    private MessageButton ls;
+    private VoteButton ls;
     private AdsButton ads;
 
     public StartScreen(Game game) {
@@ -77,7 +77,7 @@ public class StartScreen extends BaseScreen {
         adsRegion = new TextureRegion(rupor_button);
         regionRules = new TextureRegion(rulesText);
         rules = new NewsButton(regionRules, game);
-        ls = new MessageButton(lsRegion, game);
+        ls = new VoteButton(lsRegion, game);
         ads = new AdsButton(adsRegion, game);
 
 

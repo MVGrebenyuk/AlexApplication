@@ -30,10 +30,6 @@ public class BaseScreen implements Screen, InputProcessor {
     private Matrix3 screenToWorld;
 
     private Vector2 touch;
-    private Vector2 touchDraggedFind;
-    private Texture bubbl;
-    private TextureRegion regbubbl;
-    private Bubbles[] bubbles;
 
     @Override
     public void show() {
@@ -45,13 +41,6 @@ public class BaseScreen implements Screen, InputProcessor {
         worldToGl = new Matrix4();
         screenToWorld = new Matrix3();
         touch = new Vector2();
-        touchDraggedFind = new Vector2();
-        //bubbl = new Texture("textures/bubbles.png");
-        //regbubbl = new TextureRegion(bubbl);
-        //bubbles = new Bubbles[8];
-        //for (int i = 0; i < bubbles.length; i++) {
-        //    bubbles[i] = new Bubbles(regbubbl);
-       // }
     }
 
     @Override

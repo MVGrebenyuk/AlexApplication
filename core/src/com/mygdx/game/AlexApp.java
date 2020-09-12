@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
-import com.mygdx.game.Screens.NewsScreen;
+import com.mygdx.game.News.NewsScreen;
 
 public class AlexApp extends Game {
 

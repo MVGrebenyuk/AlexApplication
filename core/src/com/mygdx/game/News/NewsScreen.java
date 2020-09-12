@@ -1,22 +1,16 @@
-package com.mygdx.game.Screens;
+package com.mygdx.game.News;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
-import com.mygdx.game.Common.CloseNewsButton;
-import com.mygdx.game.Common.FullNews;
-import com.mygdx.game.Common.News;
-import com.mygdx.game.Common.NewsBorder;
 import com.mygdx.game.Utils.StrBuilder;
 import com.mygdx.game.math.Rect;
 
-import java.beans.VetoableChangeListener;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;

@@ -1,8 +1,9 @@
-package com.mygdx.game.Common;
+package com.mygdx.game.Ads;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.ScaledButton;
+import com.mygdx.game.News.NewsBorder;
 import com.mygdx.game.Utils.StrBuilder;
 import com.mygdx.game.math.Rect;
 
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 
 public class Ads extends ScaledButton {
 
-    public NewsBorder adsBorder;
+    public com.mygdx.game.News.NewsBorder adsBorder;
     public String description;
     public String title;
 
@@ -34,7 +35,7 @@ public class Ads extends ScaledButton {
     @Override
     public void resize(Rect worldBounds) {
         setHeightProportion(0.06f);
-        setTop(adsBorder.getTop() - 0.01f);
+        setTop(adsBorder.getTop() - 0.04f);
         setLeft(adsBorder.getLeft() + 0.01f);
     }
 

@@ -1,4 +1,4 @@
-package com.mygdx.game.Screens;
+package com.mygdx.game.Ads;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -8,15 +8,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
-import com.mygdx.game.Common.Ads;
-import com.mygdx.game.Common.NewsBorder;
-import com.mygdx.game.Utils.StrBuilder;
+import com.mygdx.game.News.NewsBorder;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.server.ExportException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 

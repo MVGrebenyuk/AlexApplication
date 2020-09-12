@@ -1,17 +1,17 @@
-package com.mygdx.game.Buttons;
+package com.mygdx.game.Vote;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.Screens.LsScreen;
+import com.mygdx.game.Vote.VoteScreen;
 import com.mygdx.game.math.Rect;
 
 
-public class MessageButton extends ScaledButton {
+public class VoteButton extends ScaledButton {
 
     private Game game;
 
-    public MessageButton(TextureRegion region, Game game) {
+    public VoteButton(TextureRegion region, Game game) {
         super(region);
         this.game = game;
 
@@ -26,6 +26,6 @@ public class MessageButton extends ScaledButton {
 
     @Override
     public void action() {
-        game.setScreen(new LsScreen(game));
+        game.setScreen(new VoteScreen(game));
     }
 }

@@ -1,10 +1,7 @@
-package com.mygdx.game.Common;
+package com.mygdx.game.News;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.Screens.LsScreen;
-import com.mygdx.game.Screens.NewsScreen;
 import com.mygdx.game.math.Rect;
 
 public class CloseNewsButton extends ScaledButton {

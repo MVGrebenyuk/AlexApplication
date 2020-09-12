@@ -1,4 +1,4 @@
-package com.mygdx.game.Common;
+package com.mygdx.game.News;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Base.Sprite;

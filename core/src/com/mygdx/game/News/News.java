@@ -1,12 +1,9 @@
-package com.mygdx.game.Common;
+package com.mygdx.game.News;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.Base.Sprite;
-import com.mygdx.game.Screens.NewsScreen;
 import com.mygdx.game.math.Rect;
 
 import java.sql.SQLException;
@@ -56,8 +53,9 @@ public class News extends ScaledButton {
 
     @Override
     public void resize(Rect worldBounds) {
-            setHeightProportion(0.1f);
-            setLeft(newsBorder.getLeft() + 0.01f);
+        setSize(newsBorder.getWidth()/3.5f, newsBorder.getHeight()/1.5f);
+            //setHeightProportion(0.1f);
+            setLeft(newsBorder.getLeft() + 0.02f);
             setTop(newsBorder.getTop() - 0.03f);
     }
 

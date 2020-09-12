@@ -1,9 +1,8 @@
-package com.mygdx.game.Buttons;
+package com.mygdx.game.Ads;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.Screens.AdsScreen;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
