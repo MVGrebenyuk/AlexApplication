@@ -15,9 +15,8 @@ public class VoteImage extends Sprite {
 
     @Override
     public void resize(Rect worldBounds) {
-        setSize(vote.getWidth() - 0.1f, vote.getHeight()- 0.1f);
+        setSize(vote.getWidth() - 0.01f, vote.getHeight()/4);
         //setHeightProportion(0.4f);
-        setTop(vote.getTop() - 0.04f);
-        setLeft(vote.getLeft() + 0.05f);
+        setTop(vote.getTop());
     }
 }

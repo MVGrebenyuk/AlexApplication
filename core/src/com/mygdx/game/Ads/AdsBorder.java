@@ -1,34 +1,29 @@
-package com.mygdx.game.Vote;
+package com.mygdx.game.Ads;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.News.NewsBorder;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Vote extends ScaledButton {
-
-    private Texture background;
+public class AdsBorder extends ScaledButton {
 
     private int count;
     private float step = 0.16f;
     private com.mygdx.game.News.NewsBorder[] previousNext = new com.mygdx.game.News.NewsBorder[2];
 
-    public Vote(TextureRegion region, int count, com.mygdx.game.News.NewsBorder previous) {
+    public AdsBorder(TextureRegion region, int count, com.mygdx.game.News.NewsBorder previous) {
         super(region);
         this.previousNext[0] = previous;
         this.count = count;
     }
 
-    public Vote(TextureRegion region, int count){
+    public AdsBorder(TextureRegion region, int count){
         super(region);
         this.count = count;
     }
-
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
@@ -69,21 +64,21 @@ public class Vote extends ScaledButton {
         return false;
     }
 
-    public void setNextBorder(NewsBorder next){
+    public void setNextBorder(com.mygdx.game.News.NewsBorder next){
         this.previousNext[1] = next;
     }
 
     @Override
     public void resize(Rect worldBounds) {
         if(count == 1) {
-            setHeightProportion(0.8f);
+            setHeightProportion(0.165f);
             setTop(worldBounds.getTop() - 0.07f);
             //this.pos.x = this.getLeft();
         } else if(count > 1){
             setHeightProportion(0.165f);
             setTop(worldBounds.getTop() - (0.07f + step * (count - 1)));
         } else {
-            setHeightProportion(0.165f);
+            setHeightProportion(0.35f);
             setTop(worldBounds.getTop());
         }
     }

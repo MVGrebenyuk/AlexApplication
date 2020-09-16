@@ -64,7 +64,7 @@ public class StartScreen extends BaseScreen {
             }
         } */
         text = new Font("text.fnt", "text.png");
-        bg = new Texture("textures/SI_Background.png");
+        bg = new Texture("textures/loginimage.jpg");
         topbg = new Texture("textures/top_background.png");
         botbg = new Texture("textures/bottom_background.png");
         rulesText = new Texture("textures/homeButton.png");
@@ -132,11 +132,21 @@ public class StartScreen extends BaseScreen {
     public void draw() {
         batch.begin();
         background.draw(batch);
-        topBack.draw(batch);
+        batch.end();
+    }
+
+    public void drawBottomMenu(){
+        batch.begin();
         bottomBack.draw(batch);
         rules.draw(batch);
         ls.draw(batch);
         ads.draw(batch);
+        batch.end();
+    }
+
+    public void drawTopMenu(){
+        batch.begin();
+        topBack.draw(batch);
         text.draw(batch, pageName, 0 - ((pageName.length()*0.015f)/2), worldBounds.getTop() - 0.01f);
         batch.end();
     }

@@ -19,8 +19,8 @@ public class NewsButton extends ScaledButton {
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.07f);
-        setBottom(worldBounds.getBottom() + 0.01f);
+        setHeightProportion(0.1f);
+        setBottom(worldBounds.getBottom());
     }
 
     @Override
@@ -30,6 +30,7 @@ public class NewsButton extends ScaledButton {
 
     @Override
     public void action() {
+
         game.setScreen(new NewsScreen(game));
     }
 

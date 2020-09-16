@@ -19,9 +19,9 @@ public class VoteButton extends ScaledButton {
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.05f);
-        setRight(worldBounds.getRight() - 0.15f);
-        setBottom(worldBounds.getBottom() + 0.02f);
+        setHeightProportion(0.1f);
+        setRight(worldBounds.getRight() - 0.10f);
+        setBottom(worldBounds.getBottom());
     }
 
     @Override

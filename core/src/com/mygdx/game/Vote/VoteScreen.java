@@ -15,12 +15,15 @@ public class VoteScreen extends StartScreen {
     private Texture voteTexture;
     private Texture voteImageTexture;
     private Texture starstexture;
+    private Texture buttonNoTexture;
     private TextureRegion voteRegion;
     private TextureRegion imageRegion;
     private TextureRegion starsRegion;
+    private TextureRegion buttonNoTextureRegion;
     private Vote voteBorder;
     private VoteImage voteImage;
     private VoteStars stars;
+    private VoteButtonNo buttonNo;
 
     @Override
     public void setPageName(String pageName) {
@@ -34,15 +37,18 @@ public class VoteScreen extends StartScreen {
     @Override
     public void show() {
         super.show();
-        voteTexture = new Texture("textures/vote.png");
-        voteImageTexture = new Texture("data/news4.jpg");
-        starstexture = new Texture("textures/fakeStars.png");
+        voteTexture = new Texture("textures/voteBorder.png");
+        voteImageTexture = new Texture("data/news1.jpg");
+        starstexture = new Texture("textures/yesButton.png");
+        buttonNoTexture = new Texture("textures/noButton.png");
         voteRegion = new TextureRegion(voteTexture);
         imageRegion = new TextureRegion(voteImageTexture);
         starsRegion = new TextureRegion(starstexture);
+        buttonNoTextureRegion = new TextureRegion(buttonNoTexture);
         voteBorder = new Vote(voteRegion, 1);
         voteImage = new VoteImage(imageRegion, voteBorder);
         stars = new VoteStars(starsRegion, voteBorder);
+        buttonNo = new VoteButtonNo(buttonNoTextureRegion, voteBorder);
         setPageName("Голосования");
     }
 
@@ -52,6 +58,7 @@ public class VoteScreen extends StartScreen {
         voteBorder.resize(worldBounds);
         voteImage.resize(worldBounds);
         stars.resize(worldBounds);
+        buttonNo.resize(worldBounds);
     }
 
     @Override
@@ -62,7 +69,10 @@ public class VoteScreen extends StartScreen {
         voteBorder.draw(batch);
         voteImage.draw(batch);
         stars.draw(batch);
+        buttonNo.draw(batch);
         batch.end();
+        drawTopMenu();
+        drawBottomMenu();
 
     }
 

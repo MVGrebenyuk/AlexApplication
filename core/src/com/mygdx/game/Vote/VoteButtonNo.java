@@ -7,10 +7,10 @@ import com.mygdx.game.math.Rect;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class VoteStars extends ScaledButton {
+public class VoteButtonNo extends ScaledButton {
     public Vote vote;
 
-    public VoteStars(TextureRegion region, Vote vote) {
+    public VoteButtonNo(TextureRegion region, Vote vote) {
         super(region);
         this.vote = vote;
     }
@@ -19,7 +19,7 @@ public class VoteStars extends ScaledButton {
     public void resize(Rect worldBounds) {
         setSize(vote.getWidth()/2, vote.getHeight()/6);
         setBottom(vote.getBottom());
-        setLeft(vote.getLeft()+0.005f);
+        setRight(vote.getRight()-0.005f);
     }
 
     @Override

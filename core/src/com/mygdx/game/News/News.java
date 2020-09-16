@@ -19,10 +19,12 @@ public class News extends ScaledButton {
     public String title;
     public String newsImage;
     public NewsBorder newsBorder;
+    public TextureRegion region;
 
 
     public NewsScreen screen;
     public Font newsFont;
+    public Font titleFont;
 
     public Font getNewsFont() {
         return newsFont;
@@ -31,14 +33,18 @@ public class News extends ScaledButton {
     public void setNewsFont(Font newsFont) {
         this.newsFont = newsFont;
     }
+    public void setTitleFont(Font newsFont) {
+        this.titleFont = titleFont;
+    }
 
     public News(TextureRegion region, NewsScreen screen, NewsBorder border) {
         super(region);
         this.screen = screen;
         this.newsBorder = border;
+        this.region = region;
         shortcut = " ";
         description = " ";
-        title = " ";
+        title = "Заголовок новости";
     }
 
     @Override
@@ -47,16 +53,16 @@ public class News extends ScaledButton {
     }
 
     public boolean posBorder(){
-        pos.y = newsBorder.pos.y;
+        setTop(newsBorder.getTop());
         return false;
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        setSize(newsBorder.getWidth()/3.5f, newsBorder.getHeight()/1.5f);
+        setSize(newsBorder.getWidth() - 0.01f, newsBorder.getHeight()/2);
             //setHeightProportion(0.1f);
-            setLeft(newsBorder.getLeft() + 0.02f);
-            setTop(newsBorder.getTop() - 0.03f);
+            setLeft(newsBorder.getLeft() + 0.005f);
+            setTop(newsBorder.getTop());
     }
 
     public String getNewsImage() {
@@ -91,9 +97,25 @@ public class News extends ScaledButton {
         this.title = title;
     }
 
+    public TextureRegion getRegion() {
+        return region;
+    }
+
+    public NewsScreen getScreen() {
+        return screen;
+    }
+
+    public NewsBorder getNewsBorder() {
+        return newsBorder;
+    }
+
+    public void setNewsBorder(NewsBorder newsBorder) {
+        this.newsBorder = newsBorder;
+    }
 
     @Override
     public void action() throws SQLException, ClassNotFoundException {
         screen.showFullNews(this);
+        screen.setBlock(true);
     }
 }

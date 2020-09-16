@@ -18,9 +18,9 @@ public class AdsButton extends ScaledButton {
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.07f);
+        setHeightProportion(0.1f);
         setRight(worldBounds.getLeft() + 0.20f);
-        setBottom(worldBounds.getBottom() + 0.01f);
+        setBottom(worldBounds.getBottom());
     }
 
     @Override

@@ -26,6 +26,8 @@ public class CloseNewsButton extends ScaledButton {
 
     @Override
     public void action() {
+       // fnews.returnNews();
         screen.closeFullNews();
+        screen.setBlock(false);
     }
 }

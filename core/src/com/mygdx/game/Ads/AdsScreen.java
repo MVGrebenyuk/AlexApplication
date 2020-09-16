@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
-import com.mygdx.game.News.NewsBorder;
+import com.mygdx.game.Ads.AdsBorder;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
@@ -27,10 +27,10 @@ public class AdsScreen extends StartScreen {
     private TextureRegion adsBorderRegion;
     private TextureRegion adsRegion;
     //Спрайты
-    private NewsBorder[] adsBorder;
+    private AdsBorder[] adsBorder;
     private Ads[] ads;
     private Font[] descriptionFont;
-    private Font titleFont;
+    private Font[] titleFont;
     private int count;
     //
     private static FileHandle handle = Gdx.files.local("/ads.txt");
@@ -68,13 +68,14 @@ public class AdsScreen extends StartScreen {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        adsBorderTexture = new Texture("textures/newsBorder.png");
+        adsBorderTexture = new Texture("textures/adsBorder.png");
         adsTexture = new Texture("textures/alert.png");
         adsRegion = new TextureRegion(adsTexture);
         adsBorderRegion = new TextureRegion(adsBorderTexture);
-        adsBorder = new NewsBorder[count];
+        adsBorder = new AdsBorder[count];
         //Fonts
-        descriptionFont = new Font[count];//("textNews.fnt", "textNews.png");
+        descriptionFont = new Font[count];
+        titleFont = new Font[count];
         String loadShortcut = handle.readString();
         String[] loadShort = loadShortcut.split("<>");
         for(String i: loadShort){
@@ -92,19 +93,22 @@ public class AdsScreen extends StartScreen {
         for(int i = 0; i <= count-1; i++){
             adsBorder[i].draw(batch);
             ads[i].draw(batch);
-            descriptionFont[i].draw(batch, ads[i].getDescription(), ads[i].getRight() + 0.01f, ads[i].getTop() - 0.01f);
+            descriptionFont[i].draw(batch, ads[i].getDescription(), ads[i].getRight() + 0.01f, ads[i].getTop() - 0.02f);
+            titleFont[i].draw(batch, "Администрация", ads[i].getRight() + 0.03f, adsBorder[i].getTop()- 0.005f);
         }
     }
 
     public void showAds(){
-        adsBorder = new NewsBorder[count];
+        adsBorder = new AdsBorder[count];
         ads = new Ads[count];
         descriptionFont = new Font[count];
+        titleFont = new Font[count];
         for(int i = 0; i <=count-1; i++){
-            adsBorder[i] = new NewsBorder(adsBorderRegion, (i+1));
+            adsBorder[i] = new AdsBorder(adsBorderRegion, (i+1));
             ads[i] = new Ads(adsRegion, adsBorder[i], list.get(i));
             System.out.println(list.get(i));
             descriptionFont[i] = new Font("textNews.fnt", "textNews.png");
+            titleFont[i] = new Font("adsTitle.fnt", "adsTitle.png");
         }
     }
 
@@ -115,6 +119,7 @@ public class AdsScreen extends StartScreen {
             adsBorder[i].resize(worldBounds);
             ads[i].resize(worldBounds);
             descriptionFont[i].setSize(0.014f);
+            titleFont[i].setSize(0.015f);
         }
     }
 
@@ -124,6 +129,8 @@ public class AdsScreen extends StartScreen {
         batch.begin();
         drawAds();
         batch.end();
+        drawTopMenu();
+        drawBottomMenu();
     }
 
     @Override

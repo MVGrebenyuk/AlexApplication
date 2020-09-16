@@ -22,6 +22,7 @@ import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 public class NewsScreen extends StartScreen {
 
     private Font[] newsFont;
+    private Font[] tetleFont;
     private News[] news;
     private News fNews = null;
     private FullNews fullNews;
@@ -42,8 +43,15 @@ public class NewsScreen extends StartScreen {
     public static ObjectEncoderOutputStream os;
     private static  boolean reload = false;
     private static FileHandle handle = Gdx.files.local("/news.txt");
+    private Vector2 supTouch;
+    private boolean block = false;
+    private boolean drag = false;
+    private float touchY;
+
+
 
     private ArrayList<ServerNews> list = new ArrayList<>();
+    private ArrayList<String> titleList = new ArrayList<>();
 
     @Override
     public void setPageName(String pageName) {
@@ -63,7 +71,6 @@ public class NewsScreen extends StartScreen {
                 socket = new Socket("192.168.0.101", 8189);
                 os = new ObjectEncoderOutputStream(socket.getOutputStream());
                 is = new ObjectDecoderInputStream(socket.getInputStream());
-               // String getNewsIcons = "/getNewsIcons";
                 String getNews = "/getNews";
                 os.writeObject(getNews);
                 byte[] bytes = new byte[is.available()];
@@ -111,6 +118,7 @@ public class NewsScreen extends StartScreen {
             newsBorder[i].resize(worldBounds);
             news[i].resize(worldBounds);
             newsFont[i].setSize(0.014f);
+            tetleFont[i].setSize(0.016f);
         }
     }
 
@@ -118,6 +126,8 @@ public class NewsScreen extends StartScreen {
     public void render(float delta) {
         super.render(delta);
         drawl();
+        drawTopMenu();
+        drawBottomMenu();
         for(NewsBorder i : newsBorder){
             i.update(delta);
         }
@@ -126,6 +136,9 @@ public class NewsScreen extends StartScreen {
         }
     }
 
+    public void setBlock(boolean block) {
+        this.block = block;
+    }
 
     @Override
     public void dispose() {
@@ -136,8 +149,14 @@ public class NewsScreen extends StartScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        for(News i: news){
-            i.touchDown(touch, pointer, button);
+        if(drag != true) {
+            touchY = touch.y;
+            for (News i : news) {
+                if (i.pos.y < -0.31f && block == false) {
+                } else {
+                    i.touchDown(touch, pointer, button);
+                }
+            }
         }
         closeNewsButton.touchDown(touch, pointer, button);
         return super.touchDown(touch, pointer, button);
@@ -146,24 +165,43 @@ public class NewsScreen extends StartScreen {
 
     @Override
     public boolean touchDragged(Vector2 touch, int pointer) {
-            for(NewsBorder i: newsBorder) {
-                if(i.isMe(touch)) {
-                    i.dragged(touch);
+        if(block == false) {
+            drag = true;
+            if (supTouch != touch && supTouch != null) {
+                Vector2 dragged = new Vector2(supTouch.sub(touch));
+                for (NewsBorder i : newsBorder) {
+                    i.pos.y -= dragged.y;
+                    /*Работающие, но некорректно способы скроллинга */
+                    //is's work!//i.pos.sub(dragged);
+                    //is's work!// i.pos.y -= (supTouch.y - touch.y);
                 }
+                /*if(i.isMe(touch)) {
+                    i.dragged(touch);
+                }*/
             }
-            for(News i: news){
+            for (News i : news) {
                 i.posBorder();
             }
+            if (supTouch == null) {
+                supTouch = new Vector2(touch);
+            } else {
+                supTouch.set(touch);
+            }
+        }
         return super.touchDragged(touch, pointer);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
-        for(News i: news){
-            i.touchUp(touch, pointer, button);
+        if(touchY == touch.y) {
+            for (News i : news) {
+                i.touchUp(touch, pointer, button);
+            }
         }
         closeNewsButton.touchUp(touch, pointer, button);
         System.out.println("TOUCH UP");
+        supTouch = null;
+        drag = false;
         return super.touchUp(touch, pointer, button);
     }
 
@@ -190,7 +228,8 @@ public class NewsScreen extends StartScreen {
         }
         for (News i : news) {
             i.draw(batch);
-            newsFont[count].draw(batch, i.getShortcut(), i.getRight() + 0.01f, i.getTop());
+            newsFont[count].draw(batch, i.getShortcut(), i.getLeft() + 0.05f, i.getBottom() - 0.05f);
+            tetleFont[count].draw(batch, i.getTitle(), i.getLeft() + 0.01f, i.getBottom() - 0.01f);
             count++;
         }
     }
@@ -200,6 +239,7 @@ public class NewsScreen extends StartScreen {
          newsRegion = new TextureRegion[quantity];
          news = new News[quantity];
          newsFont = new Font[quantity];
+         tetleFont = new Font[quantity];
          newsBorder = new NewsBorder[quantity];
          for(int i = 1; i<=quantity; i++) {
              newsTexture[i-1] = new Texture("data/news" + i + ".jpg");
@@ -209,7 +249,9 @@ public class NewsScreen extends StartScreen {
              news[i-1].setShortcut(list.get(i-1).getShortDescription());
              news[i-1].setDescription(list.get(i-1).getFullDescription());
              newsFont[i-1] = new Font("textNews.fnt", "textNews.png");
+             tetleFont[i-1] = new Font("adsTitle.fnt", "adsTitle.png");
              news[i-1].setNewsFont(newsFont[i-1]);
+             news[i-1].setTitleFont(tetleFont[i-1]);
          }
          for(int i = 1; i<=quantity; i++){
              newsBorder[i-1].setNextBorder(newsBorder[checkNull(i)]);

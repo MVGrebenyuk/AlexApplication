@@ -1,9 +1,11 @@
 package com.mygdx.game.Ads;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.News.NewsBorder;
+import com.mygdx.game.Ads.AdsBorder;
 import com.mygdx.game.Utils.StrBuilder;
 import com.mygdx.game.math.Rect;
 
@@ -12,14 +14,17 @@ import java.sql.SQLException;
 
 public class Ads extends ScaledButton {
 
-    public com.mygdx.game.News.NewsBorder adsBorder;
+    public AdsBorder adsBorder;
     public String description;
     public String title;
+    public String data = "01.01.2021";
+    private Font dataFont;
 
-    public Ads(TextureRegion region, NewsBorder adsBorder, String description) {
+    public Ads(TextureRegion region, AdsBorder adsBorder, String description) {
         super(region);
         this.adsBorder = adsBorder;
-        this.description = StrBuilder.createShortDescr(description);
+        this.description = StrBuilder.createAdsDescription(description);
+        dataFont = new Font("commonFont.fnt", "commonFont.png");
     }
 
     @Override
@@ -32,11 +37,23 @@ public class Ads extends ScaledButton {
         return super.touchDragged(touch, pointer);
     }
 
+    public void drawTitle(SpriteBatch batch) {
+        dataFont.draw(batch, data, adsBorder.getRight() + 0.001f, adsBorder.getBottom() + 0.001f);
+
+    }
+
+    @Override
+    public void draw(SpriteBatch batch) {
+        dataFont.draw(batch, data, adsBorder.getRight() + 0.001f, adsBorder.getBottom() + 0.001f);
+        super.draw(batch);
+    }
+
     @Override
     public void resize(Rect worldBounds) {
         setHeightProportion(0.06f);
         setTop(adsBorder.getTop() - 0.04f);
         setLeft(adsBorder.getLeft() + 0.01f);
+        dataFont.setSize(0.14f);
     }
 
     @Override

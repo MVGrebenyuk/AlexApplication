@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class NewsBorder extends ScaledButton {
 
     private int count;
-    private float step = 0.16f;
+    private float step = 0.4f;
     private NewsBorder[] previousNext = new NewsBorder[2];
 
     public NewsBorder(TextureRegion region, int count, NewsBorder previous) {
@@ -71,14 +71,14 @@ public class NewsBorder extends ScaledButton {
     @Override
     public void resize(Rect worldBounds) {
         if(count == 1) {
-            setHeightProportion(0.165f);
+            setHeightProportion(0.35f);
             setTop(worldBounds.getTop() - 0.07f);
             //this.pos.x = this.getLeft();
         } else if(count > 1){
-            setHeightProportion(0.165f);
+            setHeightProportion(0.35f);
             setTop(worldBounds.getTop() - (0.07f + step * (count - 1)));
         } else {
-            setHeightProportion(0.165f);
+            setHeightProportion(0.35f);
             setTop(worldBounds.getTop());
         }
     }
