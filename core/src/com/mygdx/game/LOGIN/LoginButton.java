@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.ScaledButton;
 import com.mygdx.game.News.NewsScreen;
+import com.mygdx.game.Utils.NotificationHandler;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
@@ -14,11 +15,13 @@ public class LoginButton extends ScaledButton {
 
     private Game game;
     private LoginScreen screen;
+    private NotificationHandler notificationHandler;
 
-    public LoginButton(TextureRegion region, Game game, LoginScreen screen) {
+    public LoginButton(TextureRegion region, Game game, LoginScreen screen, NotificationHandler notificationHandler) {
         super(region);
         this.game = game;
         this.screen = screen;
+        this.notificationHandler = notificationHandler;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class LoginButton extends ScaledButton {
 
     @Override
     public void action() throws SQLException, ClassNotFoundException, IOException {
-        game.setScreen(new NewsScreen(game));
+        notificationHandler.showNotification("Hello", "FirstNotification");
+        game.setScreen(new NewsScreen(game, notificationHandler));
     }
 }

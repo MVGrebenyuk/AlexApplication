@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.BaseScreen;
 import com.mygdx.game.Sprite.Background;
+import com.mygdx.game.Utils.NotificationHandler;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
@@ -18,9 +19,11 @@ public class LoginScreen extends BaseScreen {
     public LoginButton loginButton;
     public Texture loginButtonTexture;
     public TextureRegion loginButtonTextureRegion;
+    private NotificationHandler notificationHandler;
 
-    public LoginScreen(Game game){
+    public LoginScreen(Game game, NotificationHandler notificationHandler){
         this.game = game;
+        this.notificationHandler = notificationHandler;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class LoginScreen extends BaseScreen {
         background = new Background(backgroundTexture);
         loginButtonTexture = new Texture("textures/loginButton.png");
         loginButtonTextureRegion = new TextureRegion(loginButtonTexture);
-        loginButton = new LoginButton(loginButtonTextureRegion, this.game, this);
+        loginButton = new LoginButton(loginButtonTextureRegion, this.game, this, notificationHandler);
 
     }
 

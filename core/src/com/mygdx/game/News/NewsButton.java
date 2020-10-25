@@ -3,13 +3,15 @@ package com.mygdx.game.News;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Base.ScaledButton;
-import com.mygdx.game.News.NewsScreen;
+import com.mygdx.game.Common.ScreenRepository;
+import com.mygdx.game.Utils.NotificationHandler;
 import com.mygdx.game.math.Rect;
 
 
 public class NewsButton extends ScaledButton {
 
     private Game game;
+    private NotificationHandler notificationHandler;
 
     public NewsButton(TextureRegion region, Game game) {
         super(region);
@@ -30,8 +32,11 @@ public class NewsButton extends ScaledButton {
 
     @Override
     public void action() {
+        if (ScreenRepository.newsScreen == null) {
+            game.setScreen(new NewsScreen(game, notificationHandler));
+        } else {
+            game.setScreen(ScreenRepository.newsScreen);
+        }
 
-        game.setScreen(new NewsScreen(game));
     }
-
 }

@@ -10,6 +10,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
+import com.mygdx.game.Common.ScreenRepository;
+import com.mygdx.game.Utils.NotificationHandler;
 import com.mygdx.game.Utils.StrBuilder;
 import com.mygdx.game.math.Rect;
 
@@ -52,6 +54,7 @@ public class NewsScreen extends StartScreen {
     private boolean block = false;
     private boolean drag = false;
     private float touchY;
+    public NotificationHandler notificationHandler;
 
 
 
@@ -63,37 +66,21 @@ public class NewsScreen extends StartScreen {
         super.setPageName(pageName);
     }
 
-    public NewsScreen(Game game) {
+    public NewsScreen(Game game, NotificationHandler notificationHandler) {
         super(game);
+        ScreenRepository.newsScreen = this;
+        this.notificationHandler = notificationHandler;
+        runDownloadNews();
+        runTread();
+        createServerNews();
+
     }
+
 
     @Override
     public void show() {
         super.show();
 
-        if(socket == null || reload == true) {
-            try {
-                socket = new Socket("192.168.0.100", 8189);
-                os = new ObjectEncoderOutputStream(socket.getOutputStream());
-                is = new ObjectDecoderInputStream(socket.getInputStream());
-                String getNews = "/getNews";
-                os.writeObject(getNews);
-                String result = (String) is.readObject();
-                handle.writeBytes(result.getBytes(), false);
-                System.out.println("\n\n_______Новости загружены_____\n\n");
-                ObjectMapper mapper = new ObjectMapper();
-                listNews = mapper.readValue(result, new TypeReference<List<NewsServer>>(){});
-                System.out.println(listNews.get(1).getDescription());
-                reload = true;
-            } catch (IOException | ClassNotFoundException e) {
-                String probka = "Новость 1, пришедшая с свервера. На все равно как она отобразится, лишь бы пришла. Точно известно, что новость достаточно интересная\n" +
-                        "<>Новость 2, В России закрыто большинство уголовных дел, которые заведены по статье. Экстримизм. Неизвестно, почему, но факт остаётся фактом\n" +
-                        "<>Новость 3 Ранее здесь была новость про жопу. В данный момент такие новости больше не публикуются, т.к. это не очень цензурно\n" +
-                        "<>Новость 4 Просто короткая новость. Типа пару слов\n" +
-                        "<>Новость 5 Это вообще всем новостям новость. Пишу код и слушаю адвоката из Агоры. Очень интересно, в скобочках (нет). Да, я конечно мастер юмора, но новости из головы писать действительно сложно";
-                handle.writeString(probka, false);
-            }
-        }
         newsBorderTexture = new Texture("textures/newsBorder.png");
         fullNewsScreenTexture = new Texture("textures/fullnews.png");
         closeNewsButtontexture = new Texture("textures/closebutton.png");
@@ -102,7 +89,6 @@ public class NewsScreen extends StartScreen {
         closeNewsButtonRegion = new TextureRegion(closeNewsButtontexture);
         fullNews = new FullNews(fullNewsScreenRegion, fNews);
         closeNewsButton = new CloseNewsButton(closeNewsButtonRegion, fullNews, this);
-        createServerNews();
         showNews();
         setPageName("Новости");
     }
@@ -156,6 +142,7 @@ public class NewsScreen extends StartScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
+        notificationHandler.showNotification("Hello", "FirstNotify");
         if(drag != true) {
             touchY = touch.y;
             for (News i : news) {
@@ -288,6 +275,62 @@ public class NewsScreen extends StartScreen {
 
     public void closeFullNews() {
         showFullNewsFlag = false;
+    }
+
+    private void runDownloadNews() {
+        if(socket == null || reload == true) {
+            try {
+                socket = new Socket("192.168.0.100", 8189);
+                os = new ObjectEncoderOutputStream(socket.getOutputStream());
+                is = new ObjectDecoderInputStream(socket.getInputStream());
+                String getNews = "/getNews";
+                os.writeObject(getNews);
+                String result = (String) is.readObject();
+                handle.writeBytes(result.getBytes(), false);
+                System.out.println("\n\n_______Новости загружены_____\n\n");
+                ObjectMapper mapper = new ObjectMapper();
+                listNews = mapper.readValue(result, new TypeReference<List<NewsServer>>(){});
+                System.out.println(listNews.get(1).getDescription());
+                reload = true;
+            } catch (IOException | ClassNotFoundException e) {
+                String probka = "Новость 1, пришедшая с свервера. На все равно как она отобразится, лишь бы пришла. Точно известно, что новость достаточно интересная\n" +
+                        "<>Новость 2, В России закрыто большинство уголовных дел, которые заведены по статье. Экстримизм. Неизвестно, почему, но факт остаётся фактом\n" +
+                        "<>Новость 3 Ранее здесь была новость про жопу. В данный момент такие новости больше не публикуются, т.к. это не очень цензурно\n" +
+                        "<>Новость 4 Просто короткая новость. Типа пару слов\n" +
+                        "<>Новость 5 Это вообще всем новостям новость. Пишу код и слушаю адвоката из Агоры. Очень интересно, в скобочках (нет). Да, я конечно мастер юмора, но новости из головы писать действительно сложно";
+                handle.writeString(probka, false);
+            }
+        }
+    }
+
+    private void runTread() {new Thread(new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("Создан новый поток");
+            while (true){
+                try {
+                    os.writeObject("/update");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    String update = (String) is.readObject();
+                    if(update.startsWith("yes")){
+                        notificationHandler.showNotification("Пришла новая новость", "Пришла новая новость");
+                        Thread.sleep(30000);
+                    } else {
+                        Thread.sleep(30000);
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }).start();
     }
 
 }

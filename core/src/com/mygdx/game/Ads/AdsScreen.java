@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
+import com.mygdx.game.Utils.NotificationHandler;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
@@ -40,10 +41,14 @@ public class AdsScreen extends StartScreen {
     private Socket adsSocket;
     private ObjectEncoderOutputStream os;
     private ObjectDecoderInputStream in;
+    private NotificationHandler handler;
+
+    public void setHandler(NotificationHandler handler) {
+        this.handler = handler;
+    }
+
     //
     private List<AdsServer> listAds;
-
-
 
     @Override
     public void setPageName(String pageName) {
@@ -70,6 +75,7 @@ public class AdsScreen extends StartScreen {
             listAds = mapper.readValue(result, new TypeReference<List<AdsServer>>(){});
             System.out.println(listAds.get(0).getDescription());
             System.out.println("\n\n_______Уведомления загружены_____\n\n");
+
         } catch (IOException | ClassNotFoundException e) {
             String probka = "В Алексеевке разлилась речка какашек! Алерт!\n" +
                     "<>Сегодня будут проходить слушания на тему \"Запах родины моей\". Адрес: Площадь Ленина 1а\n" +
@@ -154,4 +160,6 @@ public class AdsScreen extends StartScreen {
     public void draw() {
         super.draw();
     }
+
+
 }
