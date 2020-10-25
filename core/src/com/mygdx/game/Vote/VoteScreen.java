@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
 import com.mygdx.game.math.Rect;
 
@@ -24,6 +25,7 @@ public class VoteScreen extends StartScreen {
     private VoteImage voteImage;
     private VoteStars stars;
     private VoteButtonNo buttonNo;
+    private Font descriptionFont;
 
     @Override
     public void setPageName(String pageName) {
@@ -49,6 +51,7 @@ public class VoteScreen extends StartScreen {
         voteImage = new VoteImage(imageRegion, voteBorder);
         stars = new VoteStars(starsRegion, voteBorder);
         buttonNo = new VoteButtonNo(buttonNoTextureRegion, voteBorder);
+        descriptionFont = new Font("textNews.fnt", "textNews.png");
         setPageName("Голосования");
     }
 
@@ -59,6 +62,7 @@ public class VoteScreen extends StartScreen {
         voteImage.resize(worldBounds);
         stars.resize(worldBounds);
         buttonNo.resize(worldBounds);
+        descriptionFont.setSize(0.015f);
     }
 
     @Override
@@ -70,6 +74,7 @@ public class VoteScreen extends StartScreen {
         voteImage.draw(batch);
         stars.draw(batch);
         buttonNo.draw(batch);
+        descriptionFont.draw(batch, voteBorder.getDescription(), voteImage.getLeft() + 0.01f, voteImage.getBottom() - 0.007f);
         batch.end();
         drawTopMenu();
         drawBottomMenu();

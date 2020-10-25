@@ -6,15 +6,17 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
-import com.mygdx.game.Ads.AdsBorder;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
@@ -38,6 +40,9 @@ public class AdsScreen extends StartScreen {
     private Socket adsSocket;
     private ObjectEncoderOutputStream os;
     private ObjectDecoderInputStream in;
+    //
+    private List<AdsServer> listAds;
+
 
 
     @Override
@@ -53,20 +58,23 @@ public class AdsScreen extends StartScreen {
     public void show() {
         super.show();
         try {
-            adsSocket = new Socket("192.168.0.101", 8189);
+            adsSocket = new Socket("192.168.0.100", 8189);
             in = new ObjectDecoderInputStream(adsSocket.getInputStream());
             os = new ObjectEncoderOutputStream(adsSocket.getOutputStream());
             String getAds = new String("/getAds");
             os.writeObject(getAds);
-            byte[] bytes = new byte[in.available()];
-            bytes = (byte[]) in.readObject();
-            System.out.println("Файл прочитан, размер: "+ bytes.length);
-            String local = Gdx.files.getLocalStoragePath();
-            System.out.println("Local path: " + local);
-            handle.writeBytes(bytes, false);
+            String result = (String) in.readObject();
+            handle.writeBytes(result.getBytes(), false);
+            System.out.println("\n\n_______Объявления загружены_____\n\n");
+            ObjectMapper mapper = new ObjectMapper();
+            listAds = mapper.readValue(result, new TypeReference<List<AdsServer>>(){});
+            System.out.println(listAds.get(0).getDescription());
             System.out.println("\n\n_______Уведомления загружены_____\n\n");
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            String probka = "В Алексеевке разлилась речка какашек! Алерт!\n" +
+                    "<>Сегодня будут проходить слушания на тему \"Запах родины моей\". Адрес: Площадь Ленина 1а\n" +
+                    "<>С 12 по 14 сентября вода по ул.Маяковского может быть окрашена в коричневый цвет. Проводятся работы против ржавчины";
+            handle.writeString(probka, false);
         }
         adsBorderTexture = new Texture("textures/adsBorder.png");
         adsTexture = new Texture("textures/alert.png");
@@ -76,12 +84,7 @@ public class AdsScreen extends StartScreen {
         //Fonts
         descriptionFont = new Font[count];
         titleFont = new Font[count];
-        String loadShortcut = handle.readString();
-        String[] loadShort = loadShortcut.split("<>");
-        for(String i: loadShort){
-            list.add(i);
-        }
-        count = loadShort.length;
+        count = listAds.size();
         showAds();
 
         setPageName("Оповещения");
@@ -105,8 +108,7 @@ public class AdsScreen extends StartScreen {
         titleFont = new Font[count];
         for(int i = 0; i <=count-1; i++){
             adsBorder[i] = new AdsBorder(adsBorderRegion, (i+1));
-            ads[i] = new Ads(adsRegion, adsBorder[i], list.get(i));
-            System.out.println(list.get(i));
+            ads[i] = new Ads(adsRegion, adsBorder[i], listAds.get(i).getDescription());
             descriptionFont[i] = new Font("textNews.fnt", "textNews.png");
             titleFont[i] = new Font("adsTitle.fnt", "adsTitle.png");
         }

@@ -6,6 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
 import com.mygdx.game.Utils.StrBuilder;
@@ -15,9 +17,12 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
+
+
 
 public class NewsScreen extends StartScreen {
 
@@ -51,7 +56,7 @@ public class NewsScreen extends StartScreen {
 
 
     private ArrayList<ServerNews> list = new ArrayList<>();
-    private ArrayList<String> titleList = new ArrayList<>();
+    private List<NewsServer> listNews;
 
     @Override
     public void setPageName(String pageName) {
@@ -68,21 +73,25 @@ public class NewsScreen extends StartScreen {
 
         if(socket == null || reload == true) {
             try {
-                socket = new Socket("192.168.0.101", 8189);
+                socket = new Socket("192.168.0.100", 8189);
                 os = new ObjectEncoderOutputStream(socket.getOutputStream());
                 is = new ObjectDecoderInputStream(socket.getInputStream());
                 String getNews = "/getNews";
                 os.writeObject(getNews);
-                byte[] bytes = new byte[is.available()];
-                bytes = (byte[]) is.readObject();
-                System.out.println("Файл прочитан, размер: "+ bytes.length);
-                String local = Gdx.files.getLocalStoragePath();
-                System.out.println("Local path: " + local);
-                handle.writeBytes(bytes, false);
+                String result = (String) is.readObject();
+                handle.writeBytes(result.getBytes(), false);
                 System.out.println("\n\n_______Новости загружены_____\n\n");
-                reload = false;
+                ObjectMapper mapper = new ObjectMapper();
+                listNews = mapper.readValue(result, new TypeReference<List<NewsServer>>(){});
+                System.out.println(listNews.get(1).getDescription());
+                reload = true;
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                String probka = "Новость 1, пришедшая с свервера. На все равно как она отобразится, лишь бы пришла. Точно известно, что новость достаточно интересная\n" +
+                        "<>Новость 2, В России закрыто большинство уголовных дел, которые заведены по статье. Экстримизм. Неизвестно, почему, но факт остаётся фактом\n" +
+                        "<>Новость 3 Ранее здесь была новость про жопу. В данный момент такие новости больше не публикуются, т.к. это не очень цензурно\n" +
+                        "<>Новость 4 Просто короткая новость. Типа пару слов\n" +
+                        "<>Новость 5 Это вообще всем новостям новость. Пишу код и слушаю адвоката из Агоры. Очень интересно, в скобочках (нет). Да, я конечно мастер юмора, но новости из головы писать действительно сложно";
+                handle.writeString(probka, false);
             }
         }
         newsBorderTexture = new Texture("textures/newsBorder.png");
@@ -99,12 +108,10 @@ public class NewsScreen extends StartScreen {
     }
 
     private void createServerNews() {
-        String loadShortcut = handle.readString();
-        String[] loadShort = loadShortcut.split("<>");
-        quantity = loadShort.length;
-        System.out.println("ДЛИНА ЛОАДШОРТКА: " + loadShortcut.length());
-        for(String i: loadShort) {
-            list.add(new ServerNews("Title", StrBuilder.createShortDescr(i), StrBuilder.createDescr(i)));
+        quantity = listNews.size();
+        for(int i = 0; i <= quantity - 1; i++){
+            listNews.get(i).setShortDesc(StrBuilder.createShortDescr(listNews.get(i).getShortDesc()));
+            listNews.get(i).setDescription(StrBuilder.createDescr(listNews.get(i).getDescription()));
         }
 
     }
@@ -242,12 +249,17 @@ public class NewsScreen extends StartScreen {
          tetleFont = new Font[quantity];
          newsBorder = new NewsBorder[quantity];
          for(int i = 1; i<=quantity; i++) {
-             newsTexture[i-1] = new Texture("data/news" + i + ".jpg");
+             try {
+                 newsTexture[i - 1] = new Texture("data/news" + i + ".jpg");
+             } catch (Exception e){
+                 newsTexture[i - 1] = new Texture("data/news" + 2 + ".jpg");
+             }
              newsRegion[i-1] = new TextureRegion(newsTexture[i-1]);
-             newsBorder[i-1] = new NewsBorder(newsBorderTextureRegion, i, newsBorder[checkNull(i-2)]); //ВОТ ХУЙ ЗНАЕТ ЧТО ТУТ СДЕЛАТЬ
+             newsBorder[i-1] = new NewsBorder(newsBorderTextureRegion, i, newsBorder[checkNull(i-2)]);
              news[i-1] = new News(newsRegion[i-1], this, newsBorder[i-1]);
-             news[i-1].setShortcut(list.get(i-1).getShortDescription());
-             news[i-1].setDescription(list.get(i-1).getFullDescription());
+             news[i-1].setShortcut(listNews.get(i-1).getShortDesc());
+             news[i-1].setDescription(listNews.get(i-1).getDescription());
+             news[i-1].setTitle(listNews.get(i-1).getTitle());
              newsFont[i-1] = new Font("textNews.fnt", "textNews.png");
              tetleFont[i-1] = new Font("adsTitle.fnt", "adsTitle.png");
              news[i-1].setNewsFont(newsFont[i-1]);

@@ -44,7 +44,7 @@ public class News extends ScaledButton {
         this.region = region;
         shortcut = " ";
         description = " ";
-        title = "Заголовок новости";
+        title = " ";
     }
 
     @Override

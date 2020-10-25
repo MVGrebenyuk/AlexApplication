@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.ScaledButton;
 import com.mygdx.game.News.NewsBorder;
+import com.mygdx.game.Utils.StrBuilder;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.sql.SQLException;
 public class Vote extends ScaledButton {
 
     private Texture background;
+    private String description =
+            StrBuilder.createVoteDescr("Комитет ЦККПСС предлагает перестроить парк имени 40 ЛЕТИЯ ВЛКСМ в озеро, которое будет включать в себя аквапарк, взлётно-посадочную полосу, современный бизнес центр и космодром. Также, выдать каждому гражданину по 1 губозакатывательной машине. Поддерживаете?");
 
     private int count;
     private float step = 0.16f;
@@ -86,6 +89,10 @@ public class Vote extends ScaledButton {
             setHeightProportion(0.165f);
             setTop(worldBounds.getTop());
         }
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
