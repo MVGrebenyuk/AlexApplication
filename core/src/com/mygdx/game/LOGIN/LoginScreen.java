@@ -7,10 +7,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Base.BaseScreen;
 import com.mygdx.game.Sprite.Background;
 import com.mygdx.game.Utils.NotificationHandler;
+import com.mygdx.game.Utils.Parameters;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.sql.SQLException;
+
+import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
+import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 
 public class LoginScreen extends BaseScreen {
     public Game game;
@@ -21,9 +26,22 @@ public class LoginScreen extends BaseScreen {
     public TextureRegion loginButtonTextureRegion;
     private NotificationHandler notificationHandler;
 
-    public LoginScreen(Game game, NotificationHandler notificationHandler){
+    // NETWORK
+
+    public static Socket socket;
+    public static ObjectDecoderInputStream is;
+    public static ObjectEncoderOutputStream os;
+
+    public LoginScreen(Game game, NotificationHandler notificationHandler) throws IOException {
         this.game = game;
         this.notificationHandler = notificationHandler;
+        socket = new Socket("192.168.0.100", 8189);
+        os = new ObjectEncoderOutputStream(socket.getOutputStream());
+        is = new ObjectDecoderInputStream(socket.getInputStream());
+        Parameters.socket = socket;
+        Parameters.is = is;
+        Parameters.os = os;
+        runNotificationThread();
     }
 
     @Override
@@ -44,6 +62,40 @@ public class LoginScreen extends BaseScreen {
         background.draw(batch);
         loginButton.draw(batch);
         batch.end();
+    }
+
+    private void runNotificationThread() {new Thread(new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("Создан новый поток");
+            while (true){
+                try {
+                    os.writeObject("/update");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    String update = (String) is.readObject();
+                    if(update.startsWith("AdsUpdate")){
+                        notificationHandler.showNotification("Алексеевка", "Пришло новое уведомление");
+                        Thread.sleep(50000);
+                    } else if(update.startsWith("NewsUpdate")) {
+                        notificationHandler.showNotification("Алексеевка", "Пришла новая новость");
+                        Thread.sleep(50000);
+                    }
+                    else {
+                        Thread.sleep(30000);
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }).start();
     }
 
     @Override

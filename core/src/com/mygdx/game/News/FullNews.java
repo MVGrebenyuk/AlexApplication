@@ -25,9 +25,7 @@ public class FullNews extends Sprite {
     @Override
     public void draw(SpriteBatch batch) {
         super.draw(batch);
-        //news.setSize(this.getWidth()/1.5f, this.getHeight()/4f);
         news.setTop(this.getTop() - 0.03f);
-        //news.setLeft(this.getLeft());
         news.draw(batch);
     }
 

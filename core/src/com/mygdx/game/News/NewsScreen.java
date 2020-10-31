@@ -10,8 +10,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mygdx.game.Base.Font;
 import com.mygdx.game.Base.StartScreen;
-import com.mygdx.game.Common.ScreenRepository;
 import com.mygdx.game.Utils.NotificationHandler;
+import com.mygdx.game.Utils.Parameters;
 import com.mygdx.game.Utils.StrBuilder;
 import com.mygdx.game.math.Rect;
 
@@ -36,8 +36,8 @@ public class NewsScreen extends StartScreen {
     private CloseNewsButton closeNewsButton;
     private NewsBorder[] newsBorder;
     private Texture newsBorderTexture;
-    public static int quantity;
-    private static boolean showFullNewsFlag = false;
+    public int quantity; //
+    private boolean showFullNewsFlag = false; //
     private Texture[] newsTexture;
     private Texture fullNewsScreenTexture;
     private Texture closeNewsButtontexture;
@@ -45,17 +45,17 @@ public class NewsScreen extends StartScreen {
     private TextureRegion[] newsRegion;
     private TextureRegion fullNewsScreenRegion;
     private TextureRegion closeNewsButtonRegion;
-    public static Socket socket;
-    public static ObjectDecoderInputStream is;
-    public static ObjectEncoderOutputStream os;
-    private static  boolean reload = false;
-    private static FileHandle handle = Gdx.files.local("/news.txt");
+    private Game game;
+    public Socket socket;//
+    public ObjectDecoderInputStream is;//
+    public ObjectEncoderOutputStream os;//
+    private boolean reload = false;//
+    private FileHandle handle = Gdx.files.local("/news.txt");//
     private Vector2 supTouch;
     private boolean block = false;
     private boolean drag = false;
     private float touchY;
     public NotificationHandler notificationHandler;
-
 
 
     private ArrayList<ServerNews> list = new ArrayList<>();
@@ -68,11 +68,8 @@ public class NewsScreen extends StartScreen {
 
     public NewsScreen(Game game, NotificationHandler notificationHandler) {
         super(game);
-        ScreenRepository.newsScreen = this;
+        this.game = game;
         this.notificationHandler = notificationHandler;
-        runDownloadNews();
-        runTread();
-        createServerNews();
 
     }
 
@@ -80,7 +77,13 @@ public class NewsScreen extends StartScreen {
     @Override
     public void show() {
         super.show();
-
+        try {
+            runDownloadNews();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         newsBorderTexture = new Texture("textures/newsBorder.png");
         fullNewsScreenTexture = new Texture("textures/fullnews.png");
         closeNewsButtontexture = new Texture("textures/closebutton.png");
@@ -89,13 +92,14 @@ public class NewsScreen extends StartScreen {
         closeNewsButtonRegion = new TextureRegion(closeNewsButtontexture);
         fullNews = new FullNews(fullNewsScreenRegion, fNews);
         closeNewsButton = new CloseNewsButton(closeNewsButtonRegion, fullNews, this);
+        createServerNews();
         showNews();
-        setPageName("Новости");
+        setPageName("< Новости");
     }
 
     private void createServerNews() {
         quantity = listNews.size();
-        for(int i = 0; i <= quantity - 1; i++){
+        for (int i = 0; i <= quantity - 1; i++) {
             listNews.get(i).setShortDesc(StrBuilder.createShortDescr(listNews.get(i).getShortDesc()));
             listNews.get(i).setDescription(StrBuilder.createDescr(listNews.get(i).getDescription()));
         }
@@ -107,7 +111,7 @@ public class NewsScreen extends StartScreen {
         super.resize(worldBounds);
         fullNews.resize(worldBounds);
         closeNewsButton.resize(worldBounds);
-        for(int i = 0; i<=quantity-1; i++) {
+        for (int i = 0; i <= quantity - 1; i++) {
             newsBorder[i].resize(worldBounds);
             news[i].resize(worldBounds);
             newsFont[i].setSize(0.014f);
@@ -121,10 +125,10 @@ public class NewsScreen extends StartScreen {
         drawl();
         drawTopMenu();
         drawBottomMenu();
-        for(NewsBorder i : newsBorder){
+        for (NewsBorder i : newsBorder) {
             i.update(delta);
         }
-        for(News i : news){
+        for (News i : news) {
             i.update(delta);
         }
     }
@@ -139,11 +143,9 @@ public class NewsScreen extends StartScreen {
     }
 
 
-
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        notificationHandler.showNotification("Hello", "FirstNotify");
-        if(drag != true) {
+        if (drag != true) {
             touchY = touch.y;
             for (News i : news) {
                 if (i.pos.y < -0.31f && block == false) {
@@ -159,7 +161,7 @@ public class NewsScreen extends StartScreen {
 
     @Override
     public boolean touchDragged(Vector2 touch, int pointer) {
-        if(block == false) {
+        if (block == false) {
             drag = true;
             if (supTouch != touch && supTouch != null) {
                 Vector2 dragged = new Vector2(supTouch.sub(touch));
@@ -182,12 +184,16 @@ public class NewsScreen extends StartScreen {
                 supTouch.set(touch);
             }
         }
+        if (newsBorder[0].getTop() < worldBounds.getTop() - 0.15f) {
+            game.setScreen(new NewsScreen(this.game, notificationHandler));
+            System.out.println("Новости обновлены");
+        }
         return super.touchDragged(touch, pointer);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
-        if(touchY == touch.y) {
+        if (touchY == touch.y) {
             for (News i : news) {
                 i.touchUp(touch, pointer, button);
             }
@@ -207,7 +213,7 @@ public class NewsScreen extends StartScreen {
     public void drawl() {
         batch.begin();
         createNews();
-        if(showFullNewsFlag == true) {
+        if (showFullNewsFlag == true) {
             fullNews.draw(batch);
             closeNewsButton.draw(batch);
             fullNews.getNews().getNewsFont().draw(batch, fullNews.getNews().getDescription(), fullNews.getLeft() + 0.04f, fullNews.getTop() - 0.3f);
@@ -217,7 +223,7 @@ public class NewsScreen extends StartScreen {
 
     public void createNews() {
         int count = 0;
-        for(NewsBorder i: newsBorder){
+        for (NewsBorder i : newsBorder) {
             i.draw(batch);
         }
         for (News i : news) {
@@ -228,109 +234,72 @@ public class NewsScreen extends StartScreen {
         }
     }
 
-     public void showNews(){
-         newsTexture = new Texture[quantity];
-         newsRegion = new TextureRegion[quantity];
-         news = new News[quantity];
-         newsFont = new Font[quantity];
-         tetleFont = new Font[quantity];
-         newsBorder = new NewsBorder[quantity];
-         for(int i = 1; i<=quantity; i++) {
-             try {
-                 newsTexture[i - 1] = new Texture("data/news" + i + ".jpg");
-             } catch (Exception e){
-                 newsTexture[i - 1] = new Texture("data/news" + 2 + ".jpg");
-             }
-             newsRegion[i-1] = new TextureRegion(newsTexture[i-1]);
-             newsBorder[i-1] = new NewsBorder(newsBorderTextureRegion, i, newsBorder[checkNull(i-2)]);
-             news[i-1] = new News(newsRegion[i-1], this, newsBorder[i-1]);
-             news[i-1].setShortcut(listNews.get(i-1).getShortDesc());
-             news[i-1].setDescription(listNews.get(i-1).getDescription());
-             news[i-1].setTitle(listNews.get(i-1).getTitle());
-             newsFont[i-1] = new Font("textNews.fnt", "textNews.png");
-             tetleFont[i-1] = new Font("adsTitle.fnt", "adsTitle.png");
-             news[i-1].setNewsFont(newsFont[i-1]);
-             news[i-1].setTitleFont(tetleFont[i-1]);
-         }
-         for(int i = 1; i<=quantity; i++){
-             newsBorder[i-1].setNextBorder(newsBorder[checkNull(i)]);
-         }
-     }
+    public void showNews() {
+        newsTexture = new Texture[quantity];
+        newsRegion = new TextureRegion[quantity];
+        news = new News[quantity];
+        newsFont = new Font[quantity];
+        tetleFont = new Font[quantity];
+        newsBorder = new NewsBorder[quantity];
+        for (int i = 1; i <= quantity; i++) {
+            try {
+                newsTexture[i - 1] = new Texture("data/news" + i + ".jpg");
+            } catch (Exception e) {
+                newsTexture[i - 1] = new Texture("data/news" + 2 + ".jpg");
+            }
+            newsRegion[i - 1] = new TextureRegion(newsTexture[i - 1]);
+            newsBorder[i - 1] = new NewsBorder(newsBorderTextureRegion, i, newsBorder[checkNull(i - 2)]);
+            news[i - 1] = new News(newsRegion[i - 1], this, newsBorder[i - 1]);
+            news[i - 1].setShortcut(listNews.get(i - 1).getShortDesc());
+            news[i - 1].setDescription(listNews.get(i - 1).getDescription());
+            news[i - 1].setTitle(listNews.get(i - 1).getTitle());
+            newsFont[i - 1] = new Font("textNews.fnt", "textNews.png");
+            tetleFont[i - 1] = new Font("adsTitle.fnt", "adsTitle.png");
+            news[i - 1].setNewsFont(newsFont[i - 1]);
+            news[i - 1].setTitleFont(tetleFont[i - 1]);
+        }
+        for (int i = 1; i <= quantity; i++) {
+            newsBorder[i - 1].setNextBorder(newsBorder[checkNull(i)]);
+        }
+    }
 
-     public int checkNull(int i){
+    public int checkNull(int i) {
         int x = i;
-        if(i <= 0){
+        if (i <= 0) {
             x = 0;
         }
-        if(i >= quantity){
-            x = quantity-1;
-         }
+        if (i >= quantity) {
+            x = quantity - 1;
+        }
         return x;
-     }
+    }
 
-     public void showFullNews(News news){
+    public void showFullNews(News news) {
         showFullNewsFlag = true;
         fullNews.setNews(news);
-     }
+    }
 
     public void closeFullNews() {
         showFullNewsFlag = false;
     }
 
-    private void runDownloadNews() {
-        if(socket == null || reload == true) {
-            try {
-                socket = new Socket("192.168.0.100", 8189);
-                os = new ObjectEncoderOutputStream(socket.getOutputStream());
-                is = new ObjectDecoderInputStream(socket.getInputStream());
+    private void runDownloadNews() throws IOException, ClassNotFoundException {
+                socket = Parameters.socket;
+                os = Parameters.os;
+                is = Parameters.is;
                 String getNews = "/getNews";
                 os.writeObject(getNews);
                 String result = (String) is.readObject();
                 handle.writeBytes(result.getBytes(), false);
                 System.out.println("\n\n_______Новости загружены_____\n\n");
                 ObjectMapper mapper = new ObjectMapper();
-                listNews = mapper.readValue(result, new TypeReference<List<NewsServer>>(){});
-                System.out.println(listNews.get(1).getDescription());
-                reload = true;
-            } catch (IOException | ClassNotFoundException e) {
-                String probka = "Новость 1, пришедшая с свервера. На все равно как она отобразится, лишь бы пришла. Точно известно, что новость достаточно интересная\n" +
-                        "<>Новость 2, В России закрыто большинство уголовных дел, которые заведены по статье. Экстримизм. Неизвестно, почему, но факт остаётся фактом\n" +
-                        "<>Новость 3 Ранее здесь была новость про жопу. В данный момент такие новости больше не публикуются, т.к. это не очень цензурно\n" +
-                        "<>Новость 4 Просто короткая новость. Типа пару слов\n" +
-                        "<>Новость 5 Это вообще всем новостям новость. Пишу код и слушаю адвоката из Агоры. Очень интересно, в скобочках (нет). Да, я конечно мастер юмора, но новости из головы писать действительно сложно";
-                handle.writeString(probka, false);
-            }
-        }
-    }
-
-    private void runTread() {new Thread(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println("Создан новый поток");
-            while (true){
+                listNews = mapper.readValue(result, new TypeReference<List<NewsServer>>() {
+                });
                 try {
-                    os.writeObject("/update");
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println(listNews.get(0).getDescription());
+                } catch (Exception e) {
+                    System.out.println("Новостей нет");
                 }
-                try {
-                    String update = (String) is.readObject();
-                    if(update.startsWith("yes")){
-                        notificationHandler.showNotification("Пришла новая новость", "Пришла новая новость");
-                        Thread.sleep(30000);
-                    } else {
-                        Thread.sleep(30000);
-                    }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }).start();
     }
 
 }

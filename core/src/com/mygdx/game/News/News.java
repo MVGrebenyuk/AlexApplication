@@ -59,7 +59,7 @@ public class News extends ScaledButton {
 
     @Override
     public void resize(Rect worldBounds) {
-        setSize(newsBorder.getWidth() - 0.01f, newsBorder.getHeight()/2);
+        setSize(newsBorder.getWidth() - 0.01f, newsBorder.getHeight()/1.5f);
             //setHeightProportion(0.1f);
             setLeft(newsBorder.getLeft() + 0.005f);
             setTop(newsBorder.getTop());

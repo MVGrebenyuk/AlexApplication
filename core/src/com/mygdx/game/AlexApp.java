@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.mygdx.game.LOGIN.LoginScreen;
 import com.mygdx.game.Utils.NotificationHandler;
 
+import java.io.IOException;
+
 public class AlexApp extends Game {
 
 	private NotificationHandler notificationHandler;
@@ -11,10 +13,14 @@ public class AlexApp extends Game {
 	@Override
 	public void create() {
 
-		setScreen(new LoginScreen(this, notificationHandler)
+		try {
+			setScreen(new LoginScreen(this, notificationHandler)
 
 
-		);
+			);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void setNotificationHandler(NotificationHandler handler) {

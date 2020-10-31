@@ -13,7 +13,8 @@ public class Top_background extends Sprite {
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.06f);
+        setHeightProportion(0.05f);
         setTop(worldBounds.getTop());
+        setLeft(worldBounds.getLeft() + 0.02f);
     }
 }

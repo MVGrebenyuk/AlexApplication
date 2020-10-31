@@ -17,19 +17,19 @@ public class AdapterAndroid implements NotificationHandler {
     }
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void showNotification(String title, String text) {
 
         Notification.Builder mBuilder = new Notification.Builder(gameActivity)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(title)
-                .setContentText(text);
+                .setContentText(text)
+                .setDefaults(Notification.DEFAULT_SOUND);
 
 
         int notificationId = 1;
-        // Gets an instance of the NotificationManager service
         NotificationManager notificationManager = (NotificationManager) gameActivity.getSystemService(gameActivity.NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
         notificationManager.notify(notificationId, mBuilder.build());
     }
 }

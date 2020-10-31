@@ -152,6 +152,12 @@ public class AdsScreen extends StartScreen {
     }
 
     @Override
+    public boolean touchDragged(Vector2 touch, int pointer) {
+
+        return super.touchDragged(touch, pointer);
+    }
+
+    @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, ClassNotFoundException, IOException {
         return super.touchUp(touch, pointer, button);
     }

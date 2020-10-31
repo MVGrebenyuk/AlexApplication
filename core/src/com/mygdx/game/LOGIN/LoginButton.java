@@ -42,7 +42,6 @@ public class LoginButton extends ScaledButton {
 
     @Override
     public void action() throws SQLException, ClassNotFoundException, IOException {
-        notificationHandler.showNotification("Hello", "FirstNotification");
         game.setScreen(new NewsScreen(game, notificationHandler));
     }
 }

@@ -29,5 +29,6 @@ public class CloseNewsButton extends ScaledButton {
        // fnews.returnNews();
         screen.closeFullNews();
         screen.setBlock(false);
+        screen.touchDragged(this.pos, 1);
     }
 }

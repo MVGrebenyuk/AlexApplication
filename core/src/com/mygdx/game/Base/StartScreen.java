@@ -147,7 +147,7 @@ public class StartScreen extends BaseScreen {
     public void drawTopMenu(){
         batch.begin();
         topBack.draw(batch);
-        text.draw(batch, pageName, 0 - ((pageName.length()*0.015f)/2), worldBounds.getTop() - 0.01f);
+        text.draw(batch, pageName, topBack.getLeft() + 0.01f, topBack.getTop() - 0.01f);
         batch.end();
     }
 }
