@@ -25,14 +25,14 @@ public class FullNews extends Sprite {
     @Override
     public void draw(SpriteBatch batch) {
         super.draw(batch);
-        news.setTop(this.getTop() - 0.03f);
+        news.setTop(this.getTop() - 0.02f);
         news.draw(batch);
     }
 
     @Override
     public void resize(Rect worldBounds) {
-            setHeightProportion(0.9f);
-            setTop(worldBounds.getTop() - 0.01f);
+            setHeightProportion(0.96f);
+            setTop(worldBounds.getTop() - 0.02f);
     }
 
     public void returnNews(){

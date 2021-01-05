@@ -5,11 +5,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Ads.AdsButton;
-import com.mygdx.game.Vote.VoteButton;
 import com.mygdx.game.News.NewsButton;
 import com.mygdx.game.Sprite.Background;
 import com.mygdx.game.Sprite.Bottom_background;
+import com.mygdx.game.Sprite.ChoiseRegionButton;
 import com.mygdx.game.Sprite.Top_background;
+import com.mygdx.game.Vote.VoteButton;
 import com.mygdx.game.math.Rect;
 
 import java.io.IOException;
@@ -32,9 +33,13 @@ public class StartScreen extends BaseScreen {
     private Texture rupor_button;
     private Texture topbg;
     private Texture botbg;
+    private Texture regions;
     private TextureRegion regionRules;
+    private TextureRegion regionsRegion;
     private TextureRegion lsRegion;
     private TextureRegion adsRegion;
+
+    //Other
     private Socket socket;
     private String pageName = "HomePage";
 
@@ -47,6 +52,7 @@ public class StartScreen extends BaseScreen {
     private NewsButton rules;
     private VoteButton ls;
     private AdsButton ads;
+    private ChoiseRegionButton choiseRegionButton;
 
     public StartScreen(Game game) {
         this.game = game;
@@ -70,15 +76,18 @@ public class StartScreen extends BaseScreen {
         rulesText = new Texture("textures/homeButton.png");
         lsText = new Texture("textures/lsImage.png");
         rupor_button = new Texture("textures/rupor_button.png");
+        regions = new Texture("data/RegionsLogo/Alexeevka.png");
         background = new Background(bg);
         topBack = new Top_background(topbg);
         bottomBack = new Bottom_background(botbg);
         lsRegion = new TextureRegion(lsText);
         adsRegion = new TextureRegion(rupor_button);
         regionRules = new TextureRegion(rulesText);
+        regionsRegion = new TextureRegion(regions);
         rules = new NewsButton(regionRules, game);
         ls = new VoteButton(lsRegion, game);
         ads = new AdsButton(adsRegion, game);
+        choiseRegionButton = new ChoiseRegionButton(regionsRegion, game);
 
 
     }
@@ -92,6 +101,7 @@ public class StartScreen extends BaseScreen {
         rules.resize(worldBounds);
         ls.resize(worldBounds);
         ads.resize(worldBounds);
+        choiseRegionButton.resize(worldBounds);
         text.setSize(0.02f);
     }
 
@@ -113,6 +123,7 @@ public class StartScreen extends BaseScreen {
         rules.touchDown(touch, pointer, button);
         ls.touchDown(touch, pointer, button);
         ads.touchDown(touch, pointer, button);
+        choiseRegionButton.touchDown(touch, pointer, button);
         return false;
     }
 
@@ -121,6 +132,7 @@ public class StartScreen extends BaseScreen {
         rules.touchUp(touch, pointer, button);
         ls.touchUp(touch, pointer, button);
         ads.touchUp(touch, pointer, button);
+        choiseRegionButton.touchUp(touch, pointer, button);
         return false;
     }
 
@@ -147,6 +159,7 @@ public class StartScreen extends BaseScreen {
     public void drawTopMenu(){
         batch.begin();
         topBack.draw(batch);
+        choiseRegionButton.draw(batch);
         text.draw(batch, pageName, topBack.getLeft() + 0.01f, topBack.getTop() - 0.01f);
         batch.end();
     }

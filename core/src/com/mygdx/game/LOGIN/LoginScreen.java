@@ -25,6 +25,7 @@ public class LoginScreen extends BaseScreen {
     public Texture loginButtonTexture;
     public TextureRegion loginButtonTextureRegion;
     private NotificationHandler notificationHandler;
+    private boolean isNotConnection = false;
 
     // NETWORK
 
@@ -35,23 +36,37 @@ public class LoginScreen extends BaseScreen {
     public LoginScreen(Game game, NotificationHandler notificationHandler) throws IOException {
         this.game = game;
         this.notificationHandler = notificationHandler;
-        socket = new Socket("192.168.0.100", 8189);
-        os = new ObjectEncoderOutputStream(socket.getOutputStream());
-        is = new ObjectDecoderInputStream(socket.getInputStream());
-        Parameters.socket = socket;
-        Parameters.is = is;
-        Parameters.os = os;
-        runNotificationThread();
     }
 
     @Override
     public void show() {
         super.show();
+        if (socket == null && isNotConnection != true) {
+            try {
+                socket = new Socket("192.168.0.100", 8189);
+
+                os = new ObjectEncoderOutputStream(socket.getOutputStream());
+                is = new ObjectDecoderInputStream(socket.getInputStream());
+                Parameters.socket = socket;
+                Parameters.is = is;
+                Parameters.os = os;
+                runNotificationThread();
+            } catch (Exception e) {
+                isNotConnection = true;
+                loginButtonTexture = new Texture("textures/loginButtonError.png");
+                loginButtonTextureRegion = new TextureRegion(loginButtonTexture);
+                loginButton = new LoginButton(loginButtonTextureRegion, this.game, this, notificationHandler);
+                notificationHandler.showNotification("Not connected", "Нет соединения с сервером. Перезапустите приложение и попробуйте позже");
+
+            }
+        }
         backgroundTexture = new Texture("textures/loginPage.jpg");
         background = new Background(backgroundTexture);
-        loginButtonTexture = new Texture("textures/loginButton.png");
-        loginButtonTextureRegion = new TextureRegion(loginButtonTexture);
-        loginButton = new LoginButton(loginButtonTextureRegion, this.game, this, notificationHandler);
+        if(isNotConnection != true) {
+            loginButtonTexture = new Texture("textures/loginButton.png");
+            loginButtonTextureRegion = new TextureRegion(loginButtonTexture);
+            loginButton = new LoginButton(loginButtonTextureRegion, this.game, this, notificationHandler);
+        }
 
     }
 
@@ -64,7 +79,8 @@ public class LoginScreen extends BaseScreen {
         batch.end();
     }
 
-    private void runNotificationThread() {new Thread(new Runnable() {
+    private void runNotificationThread() {
+        new Thread(new Runnable() {
         @Override
         public void run() {
             System.out.println("Создан новый поток");
@@ -107,13 +123,17 @@ public class LoginScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        loginButton.touchDown(touch, pointer, button);
+        if(isNotConnection != true) {
+            loginButton.touchDown(touch, pointer, button);
+        }
         return super.touchDown(touch, pointer, button);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) throws SQLException, IOException, ClassNotFoundException {
-        loginButton.touchUp(touch, pointer, button);
+        if(isNotConnection != true) {
+            loginButton.touchUp(touch, pointer, button);
+        }
         return super.touchUp(touch, pointer, button);
     }
 }

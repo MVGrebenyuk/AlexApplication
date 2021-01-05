@@ -20,8 +20,8 @@ public class CloseNewsButton extends ScaledButton {
     @Override
     public void resize(Rect worldBounds) {
         setHeightProportion(0.05f);
-        setRight(fnews.getRight() - 0.04f);
-        setTop(fnews.getTop() - 0.03f);
+        setLeft(fnews.getLeft() + 0.03f);
+        setTop(fnews.getTop() - 0.05f);
     }
 
     @Override

@@ -82,6 +82,21 @@ public class VoteScreen extends StartScreen {
     }
 
     @Override
+    public void draw() {
+        super.draw();
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return super.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return super.touchUp(screenX, screenY, pointer, button);
+    }
+
+    @Override
     public void dispose() {
         super.dispose();
     }
